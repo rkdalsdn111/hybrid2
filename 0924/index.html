@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 전국 문화시설 및 행사 탐색 서비스</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .search-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .tab-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            color: #666;
+            background: #f8f9fa;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .search-form {
+            display: none;
+        }
+
+        .search-form.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            height: fit-content;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .demo-btn {
+            background: linear-gradient(45deg, #45b7d1, #96c93d);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            height: fit-content;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .category-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .category-btn {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 25px;
+            padding: 8px 18px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #495057;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .results-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            animation: fadeInUp 1s ease-out 0.2s both;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-bar h3 {
+            color: #ff6b6b;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .facility-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+        }
+
+        .facility-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .facility-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+        }
+
+        .facility-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .facility-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .facility-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-right: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .facility-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            line-height: 1.3;
+        }
+
+        .facility-info {
+            display: grid;
+            gap: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .info-icon {
+            width: 24px;
+            height: 24px;
+            color: #ff6b6b;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .info-text {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .address {
+            font-weight: 500;
+            color: #444;
+        }
+
+        .phone {
+            color: #2E7D32;
+            font-weight: 500;
+        }
+
+        .website {
+            color: #1976D2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .website:hover {
+            text-decoration: underline;
+        }
+
+        .event-date {
+            background: linear-gradient(45deg, #ffeb3b, #ff9800);
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .event-free {
+            background: linear-gradient(45deg, #4caf50, #8bc34a);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 80px;
+            color: white;
+            font-size: 1.4rem;
+        }
+
+        .loading-spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid white;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 2px solid #F44336;
+            color: #F44336;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .demo-notice {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid #4CAF50;
+            color: #2E7D32;
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 25px;
+            font-size: 1rem;
+            line-height: 1.7;
+            backdrop-filter: blur(10px);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 80px;
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        .no-results-icon {
+            font-size: 5rem;
+            margin-bottom: 25px;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .feature-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .search-form.active {
+                grid-template-columns: 1fr;
+            }
+            
+            .facility-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎭 문화시설 & 행사 탐색</h1>
+            <p>전국 문화기반시설과 서울시 문화행사 정보를 한눈에!</p>
+        </div>
+
+        <div class="search-section">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('facility')">🏛️ 문화시설 찾기</button>
+                <button class="tab-btn" onclick="switchTab('event')">🎪 문화행사 찾기</button>
+            </div>
+
+            <!-- 문화시설 검색 폼 -->
+            <div id="facilityForm" class="search-form active">
+                <div class="form-group">
+                    <label for="sido">🏠 시/도</label>
+                    <select id="sido">
+                        <option value="">전국</option>
+                        <option value="서울">서울특별시</option>
+                        <option value="부산">부산광역시</option>
+                        <option value="대구">대구광역시</option>
+                        <option value="인천">인천광역시</option>
+                        <option value="광주">광역시</option>
+                        <option value="대전">대전광역시</option>
+                        <option value="울산">울산광역시</option>
+                        <option value="세종">세종특별자치시</option>
+                        <option value="경기">경기도</option>
+                        <option value="강원">강원특별자치도</option>
+                        <option value="충북">충청북도</option>
+                        <option value="충남">충청남도</option>
+                        <option value="전북">전북특별자치도</option>
+                        <option value="전남">전라남도</option>
+                        <option value="경북">경상북도</option>
+                        <option value="경남">경상남도</option>
+                        <option value="제주">제주특별자치도</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="facilityType">🎨 시설 유형</label>
+                    <select id="facilityType">
+                        <option value="">전체</option>
+                        <option value="박물관">박물관</option>
+                        <option value="미술관">미술관</option>
+                        <option value="도서관">도서관</option>
+                        <option value="문예회관">문예회관</option>
+                        <option value="문화의집">문화의집</option>
+                        <option value="지방문화원">지방문화원</option>
+                        <option value="생활문화센터">생활문화센터</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="facilityName">🔍 시설명</label>
+                    <input type="text" id="facilityName" placeholder="시설 이름을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label for="apiKey1">🔑 API 키</label>
+                    <input type="text" id="apiKey1" placeholder="한국문화정보원 API 키">
+                </div>
+                <div class="form-group">
+                    <button class="search-btn" onclick="searchFacilities()">🔍 시설 검색</button>
+                </div>
+                <div class="form-group">
+                    <button class="demo-btn" onclick="showFacilityDemo()">📊 데모 보기</button>
+                </div>
+            </div>
+
+            <!-- 문화행사 검색 폼 -->
+            <div id="eventForm" class="search-form">
+                <div class="form-group">
+                    <label for="eventCategory">🎪 행사 분류</label>
+                    <select id="eventCategory">
+                        <option value="">전체</option>
+                        <option value="콘서트">콘서트</option>
+                        <option value="연극">연극</option>
+                        <option value="뮤지컬">뮤지컬</option>
+                        <option value="전시">전시</option>
+                        <option value="축제">축제</option>
+                        <option value="강연">강연</option>
+                        <option value="영화">영화</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="eventLocation">📍 장소</label>
+                    <input type="text" id="eventLocation" placeholder="예: 세종문화회관, 국립극장">
+                </div>
+                <div class="form-group">
+                    <label for="eventKeyword">🔍 키워드</label>
+                    <input type="text" id="eventKeyword" placeholder="행사명이나 키워드 입력">
+                </div>
+                <div class="form-group">
+                    <label for="apiKey2">🔑 API 키</label>
+                    <input type="text" id="apiKey2" placeholder="서울시 열린데이터광장 API 키">
+                </div>
+                <div class="form-group">
+                    <button class="search-btn" onclick="searchEvents()">🔍 행사 검색</button>
+                </div>
+                <div class="form-group">
+                    <button class="demo-btn" onclick="showEventDemo()">📊 데모 보기</button>
+                </div>
+            </div>
+
+            <div class="category-filters">
+                <div style="font-weight: bold; color: #555; margin-right: 15px;">빠른 검색:</div>
+                <div class="category-btn" onclick="quickSearch('서울', '박물관')">서울 박물관</div>
+                <div class="category-btn" onclick="quickSearch('서울', '미술관')">서울 미술관</div>
+                <div class="category-btn" onclick="quickSearch('서울', '도서관')">서울 도서관</div>
+                <div class="category-btn" onclick="quickSearch('부산', '문예회관')">부산 문예회관</div>
+                <div class="category-btn" onclick="quickSearch('경기', '문화의집')">경기 문화의집</div>
+            </div>
+        </div>
+
+        <div id="results" class="results-section"></div>
+    </div>
+
+    <script>
+        let currentTab = 'facility';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // 탭 버튼 활성화
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 폼 표시/숨김
+            document.querySelectorAll('.search-form').forEach(form => form.classList.remove('active'));
+            document.getElementById(tab + 'Form').classList.add('active');
+            
+            // 결과 초기화
+            document.getElementById('results').innerHTML = '';
+        }
+
+        function showLoading() {
+            document.getElementById('results').innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    🔍 문화정보를 검색하고 있습니다...
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            document.getElementById('results').innerHTML = `
+                <div class="error">
+                    ❌ ${message}
+                </div>
+            `;
+        }
+
+        // 문화시설 카드 생성
+        function createFacilityCard(facility) {
+            const facilityTypeIcons = {
+                '박물관': '🏛️',
+                '미술관': '🎨',
+                '도서관': '📚',
+                '문예회관': '🎭',
+                '문화의집': '🏠',
+                '지방문화원': '🏢',
+                '생활문화센터': '🎪'
+            };
+
+            const icon = facilityTypeIcons[facility.fcltyNm] || '🏛️';
+
+            return `
+                <div class="facility-card">
+                    <div class="facility-header">
+                        <div class="facility-icon">${icon}</div>
+                        <div class="facility-name">${facility.fcltyNm || '시설명 정보 없음'}</div>
+                    </div>
+                    <div class="facility-info">
+                        <div class="info-row">
+                            <div class="info-icon">📍</div>
+                            <div class="info-text address">${facility.rdnmadr || facility.lnmadr || '주소 정보 없음'}</div>
+                        </div>
+                        ${facility.phoneNumber ? `
+                        <div class="info-row">
+                            <div class="info-icon">📞</div>
+                            <div class="info-text phone">${facility.phoneNumber}</div>
+                        </div>
+                        ` : ''}
+                        ${facility.hmpg ? `
+                        <div class="info-row">
+                            <div class="info-icon">🌐</div>
+                            <div class="info-text"><a href="${facility.hmpg}" target="_blank" class="website">홈페이지 방문</a></div>
+                        </div>
+                        ` : ''}
+                        <div class="info-row">
+                            <div class="info-icon">🏢</div>
+                            <div class="info-text">시설 유형: ${facility.fcltyCharacterCodeNm || '정보 없음'}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon">⏰</div>
+                            <div class="info-text">운영시간: ${facility.weekdayOperOpenHour || '정보 확인 필요'}</div>
+                        </div>
+                        <div class="feature-tags">
+                            ${facility.weekendOperOpenHour ? '<span class="feature-tag">주말운영</span>' : ''}
+                            ${facility.hmpg ? '<span class="feature-tag">온라인정보</span>' : ''}
+                            ${facility.phoneNumber ? '<span class="feature-tag">전화문의</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 문화행사 카드 생성
+        function createEventCard(event) {
+            const isFree = !event.USE_FEE || event.USE_FEE === '무료' || event.USE_FEE === '0';
+            
+            return `
+                <div class="facility-card">
+                    <div class="facility-header">
+                        <div class="facility-icon">🎪</div>
+                        <div class="facility-name">${event.TITLE || '행사명 정보 없음'}</div>
+                    </div>
+                    <div class="facility-info">
+                        ${event.DATE ? `
+                        <div class="info-row">
+                            <div class="info-icon">📅</div>
+                            <div class="info-text">
+                                <span class="event-date">${event.DATE}</span>
+                                ${isFree ? '<span class="event-free">무료</span>' : ''}
+                            </div>
+                        </div>
+                        ` : ''}
+                        <div class="info-row">
+                            <div class="info-icon">📍</div>
+                            <div class="info-text address">${event.PLACE || '장소 정보 없음'}</div>
+                        </div>
+                        ${event.ORG_NAME ? `
+                        <div class="info-row">
+                            <div class="info-icon">🏢</div>
+                            <div class="info-text">${event.ORG_NAME}</div>
+                        </div>
+                        ` : ''}
+                        ${event.USE_TRGT ? `
+                        <div class="info-row">
+                            <div class="info-icon">👥</div>
+                            <div class="info-text">이용대상: ${event.USE_TRGT}</div>
+                        </div>
+                        ` : ''}
+                        ${event.USE_FEE && !isFree ? `
+                        <div class="info-row">
+                            <div class="info-icon">💰</div>
+                            <div class="info-text">이용요금: ${event.USE_FEE}</div>
+                        </div>
+                        ` : ''}
+                        ${event.INQUIRY ? `
+                        <div class="info-row">
+                            <div class="info-icon">📞</div>
+                            <div class="info-text phone">${event.INQUIRY}</div>
+                        </div>
+                        ` : ''}
+                        ${event.HMPG_ADDR ? `
+                        <div class="info-row">
+                            <div class="info-icon">🌐</div>
+                            <div class="info-text"><a href="${event.HMPG_ADDR}" target="_blank" class="website">상세정보</a></div>
+                        </div>
+                        ` : ''}
+                        <div class="feature-tags">
+                            ${isFree ? '<span class="feature-tag">무료행사</span>' : ''}
+                            ${event.HMPG_ADDR ? '<span class="feature-tag">온라인예약</span>' : ''}
+                            ${event.PROGRAM ? '<span class="feature-tag">프로그램 있음</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayResults(items, searchInfo, type) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (!items || items.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">${type === 'facility' ? '🏛️' : '🎪'}</div>
+                        검색 조건에 맞는 ${type === 'facility' ? '문화시설' : '문화행사'}을 찾을 수 없습니다.<br>
+                        다른 조건으로 다시 검색해보세요.
+                    </div>
+                `;
+                return;
+            }
+
+            const typeText = type === 'facility' ? '문화시설' : '문화행사';
+            const statsHtml = `
+                <div class="stats-bar">
+                    <h3>🎯 검색 결과</h3>
+                    <p>${searchInfo} ${typeText} 검색 결과: <strong>${items.length}개</strong>를 찾았습니다</p>
+                </div>
+            `;
+
+            const cardsHtml = items.map(item => 
+                type === 'facility' ? createFacilityCard(item) : createEventCard(item)
+            ).join('');
+            
+            resultsDiv.innerHTML = statsHtml + `<div class="facility-grid">${cardsHtml}</div>`;
+        }
+
+        async function searchFacilities() {
+            const sido = document.getElementById('sido').value;
+            const facilityType = document.getElementById('facilityType').value;
+            const facilityName = document.getElementById('facilityName').value;
+            const apiKey = document.getElementById('apiKey1').value.trim();
+
+            if (!sido && !facilityType && !facilityName) {
+                showError('검색 조건을 최소 하나는 입력해주세요.');
+                return;
+            }
+
+            if (!apiKey) {
+                showError(`
+                    API 키를 입력해주세요.<br>
+                    <strong>발급 방법:</strong><br>
+                    1. <a href="https://www.culture.go.kr/openapi" target="_blank" style="color: #ff6b6b;">한국문화정보원 문화포털</a> 방문<br>
+                    2. 회원가입 후 API 신청<br>
+                    3. 승인 후 인증키 발급받기
+                `);
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const params = new URLSearchParams({
+                    serviceKey: apiKey,
+                    sido: sido || '',
+                    category: facilityType || '',
+                    keyword: facilityName || '',
+                    rows: 50,
+                    page: 1
+                });
+
+                const apiUrl = `https://www.culture.go.kr/openapi/rest/publicperformancedisplays/area?${params.toString()}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: CORS 정책으로 인한 제한`);
+                }
+
+                const data = await response.json();
+                
+                if (data && data.dbs) {
+                    const searchInfo = `${sido || ''} ${facilityType || ''} ${facilityName || ''}`.trim();
+                    displayResults(data.dbs, searchInfo, 'facility');
+                } else {
+                    throw new Error('예상치 못한 API 응답 형식입니다.');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError(`
+                    ❌ <strong>문화시설 검색 실패</strong><br><br>
+                    <strong>오류 내용:</strong> ${error.message}<br><br>
+                    🔧 <strong>해결 방법:</strong><br>
+                    1. <strong>API 키 확인:</strong> 한국문화정보원에서 발급받은 키 확인<br>
+                    2. <strong>CORS 이슈:</strong> 브라우저 보안정책으로 직접 호출 제한<br>
+                    3. <strong>서버 프록시 필요:</strong> 실제 서비스에서는 서버를 통한 API 호출<br><br>
+                    💡 <strong>대안:</strong> 데모 데이터로 기능을 먼저 체험해보세요!
+                `);
+            }
+        }
+
+        async function searchEvents() {
+            const eventCategory = document.getElementById('eventCategory').value;
+            const eventLocation = document.getElementById('eventLocation').value;
+            const eventKeyword = document.getElementById('eventKeyword').value;
+            const apiKey = document.getElementById('apiKey2').value.trim();
+
+            if (!eventCategory && !eventLocation && !eventKeyword) {
+                showError('검색 조건을 최소 하나는 입력해주세요.');
+                return;
+            }
+
+            if (!apiKey) {
+                showError(`
+                    API 키를 입력해주세요.<br>
+                    <strong>발급 방법:</strong><br>
+                    1. <a href="https://data.seoul.go.kr" target="_blank" style="color: #ff6b6b;">서울 열린데이터광장</a> 방문<br>
+                    2. 회원가입 후 API 신청<br>
+                    3. 문화행사 정보 API 승인받기
+                `);
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const params = new URLSearchParams({
+                    KEY: apiKey,
+                    TYPE: 'json',
+                    SERVICE: 'culturalEventInfo',
+                    START_INDEX: 1,
+                    END_INDEX: 100
+                });
+
+                if (eventCategory) params.append('CODENAME', eventCategory);
+                if (eventLocation) params.append('PLACE', eventLocation);
+                if (eventKeyword) params.append('TITLE', eventKeyword);
+
+                const apiUrl = `http://openapi.seoul.go.kr:8088/${params.toString()}/culturalEventInfo/1/100/`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: CORS 정책으로 인한 제한`);
+                }
+
+                const data = await response.json();
+                
+                if (data && data.culturalEventInfo && data.culturalEventInfo.row) {
+                    const searchInfo = `${eventCategory || ''} ${eventLocation || ''} ${eventKeyword || ''}`.trim();
+                    displayResults(data.culturalEventInfo.row, searchInfo, 'event');
+                } else {
+                    throw new Error('검색 결과가 없습니다.');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError(`
+                    ❌ <strong>문화행사 검색 실패</strong><br><br>
+                    <strong>오류 내용:</strong> ${error.message}<br><br>
+                    🔧 <strong>해결 방법:</strong><br>
+                    1. <strong>API 키 확인:</strong> 서울 열린데이터광장에서 발급받은 키 확인<br>
+                    2. <strong>CORS 이슈:</strong> 브라우저 보안정책으로 직접 호출 제한<br>
+                    3. <strong>서버 프록시 필요:</strong> 실제 서비스에서는 서버를 통한 API 호출<br><br>
+                    💡 <strong>대안:</strong> 데모 데이터로 기능을 먼저 체험해보세요!
+                `);
+            }
+        }
+
+        function quickSearch(region, type) {
+            if (currentTab === 'facility') {
+                document.getElementById('sido').value = region;
+                document.getElementById('facilityType').value = type;
+                showFacilityDemo();
+            } else {
+                document.getElementById('eventLocation').value = region;
+                document.getElementById('eventCategory').value = type;
+                showEventDemo();
+            }
+        }
+
+        function showFacilityDemo() {
+            showLoading();
+            
+            const demoFacilities = [
+                {
+                    fcltyNm: '국립중앙박물관',
+                    rdnmadr: '서울특별시 용산구 서빙고로 137',
+                    phoneNumber: '02-2077-9000',
+                    hmpg: 'https://www.museum.go.kr',
+                    fcltyCharacterCodeNm: '국립박물관',
+                    weekdayOperOpenHour: '10:00~18:00 (수,토요일 21:00까지)',
+                    weekendOperOpenHour: '10:00~19:00'
+                },
+                {
+                    fcltyNm: '서울시립미술관',
+                    rdnmadr: '서울특별시 중구 덕수궁길 61',
+                    phoneNumber: '02-2124-8800',
+                    hmpg: 'https://sema.seoul.go.kr',
+                    fcltyCharacterCodeNm: '시립미술관',
+                    weekdayOperOpenHour: '10:00~20:00 (화요일 휴관)',
+                    weekendOperOpenHour: '10:00~19:00'
+                },
+                {
+                    fcltyNm: '국립한글박물관',
+                    rdnmadr: '서울특별시 용산구 서빙고로 139',
+                    phoneNumber: '02-2124-6200',
+                    hmpg: 'https://www.hangeul.go.kr',
+                    fcltyCharacterCodeNm: '국립박물관',
+                    weekdayOperOpenHour: '10:00~17:00 (월요일 휴관)',
+                    weekendOperOpenHour: '10:00~18:00'
+                },
+                {
+                    fcltyNm: '세종문화회관',
+                    rdnmadr: '서울특별시 종로구 세종대로 175',
+                    phoneNumber: '02-399-1000',
+                    hmpg: 'https://www.sejongpac.or.kr',
+                    fcltyCharacterCodeNm: '문예회관',
+                    weekdayOperOpenHour: '공연에 따라 상이',
+                    weekendOperOpenHour: '공연에 따라 상이'
+                },
+                {
+                    fcltyNm: '국립현대미술관 서울관',
+                    rdnmadr: '서울특별시 종로구 삼청로 30',
+                    phoneNumber: '02-3701-9500',
+                    hmpg: 'https://www.mmca.go.kr',
+                    fcltyCharacterCodeNm: '국립미술관',
+                    weekdayOperOpenHour: '10:00~18:00 (금,토요일 21:00까지)',
+                    weekendOperOpenHour: '10:00~18:00'
+                },
+                {
+                    fcltyNm: '서울도서관',
+                    rdnmadr: '서울특별시 중구 세종대로 110',
+                    phoneNumber: '02-2133-0300',
+                    hmpg: 'https://lib.seoul.go.kr',
+                    fcltyCharacterCodeNm: '공공도서관',
+                    weekdayOperOpenHour: '09:00~21:00',
+                    weekendOperOpenHour: '09:00~17:00'
+                }
+            ];
+
+            setTimeout(() => {
+                displayResults(demoFacilities, '서울 문화시설', 'facility');
+                addDemoNotice('facility');
+            }, 1500);
+        }
+
+        function showEventDemo() {
+            showLoading();
+            
+            const demoEvents = [
+                {
+                    TITLE: '2024 서울국제음악제',
+                    DATE: '2024.10.15 ~ 2024.11.30',
+                    PLACE: '세종문화회관 대극장',
+                    ORG_NAME: '세종문화회관',
+                    USE_TRGT: '전연령',
+                    USE_FEE: '20,000원~80,000원',
+                    INQUIRY: '02-399-1000',
+                    HMPG_ADDR: 'https://www.sejongpac.or.kr',
+                    PROGRAM: '클래식 음악제'
+                },
+                {
+                    TITLE: '현대미술 특별전: 디지털 아트',
+                    DATE: '2024.09.01 ~ 2024.12.31',
+                    PLACE: '국립현대미술관 서울관',
+                    ORG_NAME: '국립현대미술관',
+                    USE_TRGT: '전연령',
+                    USE_FEE: '무료',
+                    INQUIRY: '02-3701-9500',
+                    HMPG_ADDR: 'https://www.mmca.go.kr'
+                },
+                {
+                    TITLE: '한글날 기념 특별행사',
+                    DATE: '2024.10.09',
+                    PLACE: '국립한글박물관',
+                    ORG_NAME: '국립한글박물관',
+                    USE_TRGT: '가족, 성인',
+                    USE_FEE: '무료',
+                    INQUIRY: '02-2124-6200',
+                    HMPG_ADDR: 'https://www.hangeul.go.kr'
+                },
+                {
+                    TITLE: '어린이 뮤지컬 "백설공주"',
+                    DATE: '2024.10.20 ~ 2024.10.22',
+                    PLACE: '아르코예술극장 대극장',
+                    ORG_NAME: '한국문화예술위원회',
+                    USE_TRGT: '어린이, 가족',
+                    USE_FEE: '15,000원~25,000원',
+                    INQUIRY: '02-760-4800'
+                },
+                {
+                    TITLE: '시민과 함께하는 책 축제',
+                    DATE: '2024.11.01 ~ 2024.11.03',
+                    PLACE: '서울도서관',
+                    ORG_NAME: '서울특별시',
+                    USE_TRGT: '전연령',
+                    USE_FEE: '무료',
+                    INQUIRY: '02-2133-0300',
+                    HMPG_ADDR: 'https://lib.seoul.go.kr'
+                },
+                {
+                    TITLE: '가을 재즈 콘서트',
+                    DATE: '2024.11.15',
+                    PLACE: 'LG아트센터',
+                    ORG_NAME: 'LG아트센터',
+                    USE_TRGT: '성인',
+                    USE_FEE: '30,000원~70,000원',
+                    INQUIRY: '02-2005-0114',
+                    HMPG_ADDR: 'https://www.lgart.com'
+                }
+            ];
+
+            setTimeout(() => {
+                displayResults(demoEvents, '서울 문화행사', 'event');
+                addDemoNotice('event');
+            }, 1500);
+        }
+
+        function addDemoNotice(type) {
+            const typeText = type === 'facility' ? '문화시설' : '문화행사';
+            const apiInfo = type === 'facility' 
+                ? '한국문화정보원_전국문화기반시설총람 정보'
+                : '서울시_문화행사정보';
+            
+            document.getElementById('results').innerHTML += `
+                <div class="demo-notice">
+                    📋 <strong>이것은 데모 데이터입니다.</strong><br>
+                    실제 ${typeText} 정보를 보려면 해당 API 키를 발급받아 사용하세요.<br><br>
+                    🏛️ <strong>API 정보:</strong> ${apiInfo}<br>
+                    📊 <strong>제공 데이터:</strong> ${typeText} 기본정보, 주소, 연락처, 운영시간, 홈페이지 등<br><br>
+                    🔗 <strong>API 신청:</strong><br>
+                    ${type === 'facility' 
+                        ? '• <a href="https://www.culture.go.kr/openapi" target="_blank" style="color: #2E7D32; font-weight: bold;">한국문화정보원 문화포털</a>'
+                        : '• <a href="https://data.seoul.go.kr" target="_blank" style="color: #2E7D32; font-weight: bold;">서울 열린데이터광장</a>'
+                    }
+                </div>
+            `;
+        }
+
+        // 엔터키 검색 지원
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const activeElement = document.activeElement;
+                if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'SELECT') {
+                    if (currentTab === 'facility') {
+                        searchFacilities();
+                    } else {
+                        searchEvents();
+                    }
+                }
+            }
+        });
+
+        // 페이지 로드 시 문화시설 데모 데이터 표시
+        window.addEventListener('load', function() {
+            document.getElementById('sido').value = '서울';
+            document.getElementById('facilityType').value = '박물관';
+            showFacilityDemo();
+        });
+    </script>
+</body>
+</html>
