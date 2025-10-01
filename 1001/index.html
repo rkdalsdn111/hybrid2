@@ -1,9 +1,9 @@
-﻿<!DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html>
 <head>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
-	<title>Google - Dream Company</title>
+	<title>KB국민은행 스타뱅킹</title>
 	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -14,153 +14,445 @@
 	}
 	
 	body {
-		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
 	}
 
-	/* Custom Color Theme */
-	.ui-page-theme-b .ui-bar-inherit,
-	.ui-bar-b {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-		border-color: #667eea !important;
-		color: #fff !important;
+	/* KB 브랜드 컬러 */
+	:root {
+		--kb-yellow: #FFBB00;
+		--kb-brown: #6B4423;
+		--kb-dark: #333333;
+		--kb-gray: #F5F5F5;
+	}
+
+	/* 헤더 스타일 */
+	.ui-page-theme-a .ui-bar-inherit,
+	.ui-bar-a {
+		background: var(--kb-yellow) !important;
+		border-color: var(--kb-yellow) !important;
+		color: var(--kb-brown) !important;
 		text-shadow: none !important;
 	}
 
-	.ui-page-theme-b .ui-body-inherit {
-		background: #f8f9fa;
+	.ui-header .ui-title {
+		font-weight: 700 !important;
+		color: var(--kb-brown) !important;
 	}
 
-	/* Hero Section */
-	.hero-section {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		padding: 40px 20px;
+	/* KB 로고 헤더 */
+	.kb-logo-header {
+		background: var(--kb-yellow);
+		padding: 20px;
 		text-align: center;
-		color: white;
-		border-radius: 0 0 30px 30px;
-		margin: -15px -15px 20px -15px;
+		border-bottom: 3px solid var(--kb-brown);
 	}
 
-	.hero-section h2 {
+	.kb-logo {
 		font-size: 2em;
-		margin: 10px 0;
+		font-weight: 900;
+		color: var(--kb-brown);
+		letter-spacing: -1px;
+	}
+
+	.kb-subtitle {
+		font-size: 0.9em;
+		color: var(--kb-brown);
+		margin-top: 5px;
+		font-weight: 600;
+	}
+
+	/* 사용자 정보 카드 */
+	.user-info-card {
+		background: linear-gradient(135deg, var(--kb-brown) 0%, #8B5A3C 100%);
+		color: white;
+		padding: 25px 20px;
+		margin: -15px -15px 20px -15px;
+		border-radius: 0 0 25px 25px;
+		box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+	}
+
+	.user-greeting {
+		font-size: 1.3em;
 		font-weight: 700;
+		margin-bottom: 15px;
 	}
 
-	.hero-section p {
-		font-size: 1.1em;
-		opacity: 0.95;
-		margin: 10px 0;
+	.account-balance {
+		background: rgba(255,255,255,0.15);
+		backdrop-filter: blur(10px);
+		padding: 20px;
+		border-radius: 15px;
+		margin-top: 15px;
 	}
 
-	.company-logo {
-		width: 120px;
-		height: 120px;
+	.account-label {
+		font-size: 0.9em;
+		opacity: 0.9;
+		margin-bottom: 8px;
+	}
+
+	.balance-amount {
+		font-size: 2em;
+		font-weight: 700;
+		letter-spacing: -1px;
+	}
+
+	.balance-subtext {
+		font-size: 0.85em;
+		opacity: 0.8;
+		margin-top: 8px;
+	}
+
+	/* 메뉴 그리드 */
+	.menu-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 15px;
+		padding: 20px 10px;
 		background: white;
-		border-radius: 20px;
-		margin: 0 auto 20px;
+	}
+
+	.menu-item {
+		text-align: center;
+		text-decoration: none;
+		color: var(--kb-dark);
+		padding: 15px 5px;
+		border-radius: 12px;
+		transition: all 0.2s;
+	}
+
+	.menu-item:active {
+		background: var(--kb-gray);
+		transform: scale(0.95);
+	}
+
+	.menu-icon {
+		width: 50px;
+		height: 50px;
+		background: var(--kb-yellow);
+		border-radius: 15px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 3em;
-		box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+		margin: 0 auto 8px;
+		font-size: 1.5em;
+		color: var(--kb-brown);
 	}
 
-	/* Menu Cards */
-	.menu-cards {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 15px;
-		padding: 20px 10px;
-	}
-
-	.menu-card {
-		background: white;
-		border-radius: 15px;
-		padding: 25px 15px;
-		text-align: center;
-		box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-		transition: all 0.3s ease;
-		text-decoration: none;
-		color: #333;
-		border: 2px solid transparent;
-	}
-
-	.menu-card:hover {
-		transform: translateY(-5px);
-		box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-		border-color: #667eea;
-	}
-
-	.menu-card i {
-		font-size: 2.5em;
-		margin-bottom: 10px;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-	}
-
-	.menu-card h3 {
-		font-size: 1.1em;
-		margin: 10px 0 5px;
-		color: #000;
-	}
-
-	.menu-card p {
+	.menu-text {
 		font-size: 0.85em;
-		color: #000;
-		margin: 0;
+		font-weight: 600;
+		color: #333;
 	}
 
-	/* Content Sections */
-	.content-card {
+	/* 빠른 이체 섹션 */
+	.quick-section {
+		background: white;
+		margin: 20px 10px;
+		padding: 20px;
+		border-radius: 15px;
+		box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+	}
+
+	.section-title {
+		font-size: 1.1em;
+		font-weight: 700;
+		color: var(--kb-dark);
+		margin-bottom: 15px;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.quick-contacts {
+		display: flex;
+		gap: 15px;
+		overflow-x: auto;
+		padding: 10px 0;
+	}
+
+	.contact-item {
+		text-align: center;
+		min-width: 70px;
+	}
+
+	.contact-avatar {
+		width: 60px;
+		height: 60px;
+		background: linear-gradient(135deg, var(--kb-yellow) 0%, #FFD700 100%);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0 auto 8px;
+		font-size: 1.5em;
+		color: var(--kb-brown);
+		border: 3px solid white;
+		box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+	}
+
+	.contact-name {
+		font-size: 0.8em;
+		color: #333;
+		font-weight: 600;
+	}
+
+	/* 거래내역 리스트 */
+	.transaction-list {
+		background: white;
+		margin: 20px 10px;
+		padding: 20px;
+		border-radius: 15px;
+		box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+	}
+
+	.transaction-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 15px 0;
+		border-bottom: 1px solid #f0f0f0;
+	}
+
+	.transaction-item:last-child {
+		border-bottom: none;
+	}
+
+	.transaction-info {
+		flex: 1;
+	}
+
+	.transaction-title {
+		font-weight: 600;
+		color: #333;
+		margin-bottom: 5px;
+	}
+
+	.transaction-date {
+		font-size: 0.85em;
+		color: #999;
+	}
+
+	.transaction-amount {
+		font-size: 1.1em;
+		font-weight: 700;
+	}
+
+	.amount-minus {
+		color: #0066FF;
+	}
+
+	.amount-plus {
+		color: #FF3B30;
+	}
+
+	/* 입력 폼 스타일 */
+	.form-group {
+		margin: 20px 0;
+	}
+
+	.form-label {
+		display: block;
+		font-weight: 600;
+		color: #333;
+		margin-bottom: 8px;
+		font-size: 0.95em;
+	}
+
+	.form-input {
+		width: 100%;
+		padding: 15px;
+		border: 2px solid #e0e0e0;
+		border-radius: 10px;
+		font-size: 1em;
+		transition: border-color 0.3s;
+	}
+
+	.form-input:focus {
+		outline: none;
+		border-color: var(--kb-yellow);
+	}
+
+	.kb-button {
+		background: var(--kb-yellow) !important;
+		color: var(--kb-brown) !important;
+		border: none !important;
+		border-radius: 12px !important;
+		padding: 18px !important;
+		font-size: 1.1em !important;
+		font-weight: 700 !important;
+		width: 100%;
+		margin: 20px 0 10px !important;
+		text-shadow: none !important;
+		cursor: pointer;
+		transition: all 0.2s;
+	}
+
+	.kb-button:active {
+		transform: scale(0.98);
+		opacity: 0.9;
+	}
+
+	/* 계좌 선택 */
+	.account-select {
+		background: var(--kb-gray);
+		padding: 15px;
+		border-radius: 10px;
+		margin: 10px 0;
+		cursor: pointer;
+		border: 2px solid transparent;
+		transition: all 0.2s;
+	}
+
+	.account-select:hover {
+		border-color: var(--kb-yellow);
+	}
+
+	.account-name {
+		font-weight: 600;
+		color: #333;
+		margin-bottom: 5px;
+	}
+
+	.account-number {
+		font-size: 0.9em;
+		color: #666;
+	}
+
+	.account-balance-small {
+		font-weight: 700;
+		color: var(--kb-brown);
+		margin-top: 8px;
+	}
+
+	/* 뱅킹 서비스 카드 */
+	.service-card {
 		background: white;
 		border-radius: 15px;
 		padding: 20px;
-		margin-bottom: 15px;
-		box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+		margin: 15px 10px;
+		box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+		border-left: 4px solid var(--kb-yellow);
 	}
 
-	.content-card h3 {
-		color: #667eea;
-		margin-top: 0;
+	.service-title {
+		font-size: 1.1em;
+		font-weight: 700;
+		color: #333;
+		margin-bottom: 10px;
 		display: flex;
 		align-items: center;
 		gap: 10px;
 	}
 
-	.content-card h3 i {
+	.service-desc {
+		color: #666;
+		line-height: 1.6;
+		font-size: 0.95em;
+	}
+
+	/* 푸터 */
+	.ui-footer {
+		background: white !important;
+		border-top: 1px solid #e0e0e0 !important;
+		padding: 10px 0 !important;
+	}
+
+	.footer-nav {
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+	}
+
+	.footer-item {
+		text-align: center;
+		text-decoration: none;
+		color: #999;
+		flex: 1;
+		padding: 10px 0;
+		transition: color 0.2s;
+	}
+
+	.footer-item.active {
+		color: var(--kb-brown);
+	}
+
+	.footer-item i {
+		font-size: 1.5em;
+		display: block;
+		margin-bottom: 5px;
+	}
+
+	.footer-item span {
+		font-size: 0.75em;
+		font-weight: 600;
+	}
+
+	/* 회사 소개 스타일 */
+	.company-hero {
+		background: linear-gradient(135deg, var(--kb-brown) 0%, #8B5A3C 100%);
+		padding: 40px 20px;
+		text-align: center;
+		color: white;
+		margin: -15px -15px 20px -15px;
+	}
+
+	.company-logo-big {
+		font-size: 3em;
+		font-weight: 900;
+		margin-bottom: 10px;
+		color: var(--kb-yellow);
+		text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+	}
+
+	.company-slogan {
 		font-size: 1.2em;
+		opacity: 0.95;
+		font-weight: 600;
 	}
 
-	.content-card p {
-		color: #000;
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 10px;
+		margin: 20px 10px;
 	}
 
-	/* Collapsible Styling */
-	.ui-collapsible-heading {
-		margin: 10px 0 !important;
+	.stat-box {
+		background: white;
+		padding: 20px 10px;
+		border-radius: 12px;
+		text-align: center;
+		box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 	}
 
+	.stat-number {
+		font-size: 1.6em;
+		font-weight: 700;
+		color: var(--kb-brown);
+		margin-bottom: 5px;
+	}
+
+	.stat-label {
+		font-size: 0.85em;
+		color: #666;
+	}
+
+	/* 콜랩서블 스타일 */
 	.ui-collapsible-heading .ui-btn {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-		color: white !important;
+		background: var(--kb-yellow) !important;
+		color: var(--kb-brown) !important;
 		border: none !important;
 		border-radius: 12px !important;
 		padding: 15px !important;
-		font-weight: 600 !important;
+		font-weight: 700 !important;
 		text-shadow: none !important;
+		margin: 10px 0 !important;
 		text-align: left !important;
 	}
 
 	.ui-collapsible-heading .ui-btn .ui-icon {
-		background-color: white !important;
-		right: 10px !important;
-		left: auto !important;
-	}
-
-	.ui-collapsible-heading .ui-btn:after {
-		background-color: white !important;
+		background-color: var(--kb-brown) !important;
 		right: 10px !important;
 		left: auto !important;
 	}
@@ -168,602 +460,1257 @@
 	.ui-collapsible-content {
 		background: white !important;
 		border-radius: 12px !important;
-		margin-top: 5px !important;
 		padding: 20px !important;
-		box-shadow: 0 3px 10px rgba(0,0,0,0.06);
-		color: #000 !important;
+		box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+		color: #333 !important;
 	}
 
-	.ui-collapsible-content p,
-	.ui-collapsible-content ul,
-	.ui-collapsible-content li {
-		color: #000 !important;
-	}
-
-	/* Video & Media */
-	.media-container {
-		border-radius: 15px;
-		overflow: hidden;
-		margin: 15px 0;
-		box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-	}
-
-	.media-title {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		color: white;
-		padding: 15px;
-		font-weight: 600;
-		text-align: center;
-		margin: 20px 0 10px;
-		border-radius: 10px;
-	}
-
-	/* Gallery */
-	.picture {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 10px;
-	}
-
-	.picture li {
-		aspect-ratio: 1;
-		overflow: hidden;
-		border-radius: 12px;
-		box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-	}
-
-	.picture li a {
-		display: block;
-		height: 100%;
-	}
-
-	.picture li img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		transition: transform 0.3s ease;
-	}
-
-	.picture li img:hover {
-		transform: scale(1.1);
-	}
-
-	/* Stats Section */
-	.stats-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 10px;
-		margin: 20px 0;
-	}
-
-	.stat-item {
-		background: white;
-		padding: 20px 10px;
-		border-radius: 12px;
-		text-align: center;
-		box-shadow: 0 3px 10px rgba(0,0,0,0.06);
-	}
-
-	.stat-item .number {
-		font-size: 1.8em;
-		font-weight: 700;
-		color: #000;
-		text-shadow: 
-			-1px -1px 0 #fff,
-			1px -1px 0 #fff,
-			-1px 1px 0 #fff,
-			1px 1px 0 #fff,
-			-2px 0 0 #fff,
-			2px 0 0 #fff,
-			0 -2px 0 #fff,
-			0 2px 0 #fff;
-	}
-
-	.stat-item .label {
-		font-size: 0.85em;
-		color: #000;
-		margin-top: 5px;
-	}
-
-	/* Audio Player */
-	audio {
-		width: 100%;
-		border-radius: 10px;
-		margin: 10px 0;
-	}
-
-	/* Footer */
-	.ui-footer {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-		border: none !important;
-	}
-
-	.footer-content {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 10px;
-		color: white;
-	}
-
-	.footer-content i {
-		font-size: 1.2em;
-	}
-
-	/* List styling */
 	.info-list {
 		list-style: none;
 		padding: 0;
+		margin: 0;
 	}
 
 	.info-list li {
-		padding: 12px;
+		padding: 12px 15px;
 		margin: 8px 0;
-		background: #f8f9fa;
-		border-left: 4px solid #667eea;
-		border-radius: 5px;
-		color: #000;
+		background: var(--kb-gray);
+		border-left: 4px solid var(--kb-yellow);
+		border-radius: 8px;
+		color: #333;
+		line-height: 1.6;
 	}
 
 	.info-list li strong {
-		color: #667eea;
+		color: var(--kb-brown);
+		font-weight: 700;
+	}
+
+	/* 숫자 키패드 */
+	.number-pad {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 15px;
+		padding: 20px;
+		background: white;
+	}
+
+	.number-btn {
+		background: var(--kb-gray);
+		border: none;
+		border-radius: 50%;
+		width: 70px;
+		height: 70px;
+		font-size: 1.5em;
+		font-weight: 700;
+		color: #333;
+		cursor: pointer;
+		transition: all 0.2s;
+		margin: 0 auto;
+		display: block;
+	}
+
+	.number-btn:active {
+		background: var(--kb-yellow);
+		transform: scale(0.95);
+	}
+
+	/* 이체 결과 */
+	.result-icon {
+		width: 100px;
+		height: 100px;
+		background: var(--kb-yellow);
+		border-radius: 50%;
+		margin: 30px auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 3em;
+		color: var(--kb-brown);
+	}
+
+	.result-message {
+		text-align: center;
+		font-size: 1.3em;
+		font-weight: 700;
+		color: #333;
+		margin: 20px 0;
+	}
+
+	.result-detail {
+		background: var(--kb-gray);
+		padding: 20px;
+		border-radius: 12px;
+		margin: 20px 0;
+	}
+
+	.result-row {
+		display: flex;
+		justify-content: space-between;
+		padding: 12px 0;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.result-row:last-child {
+		border-bottom: none;
+		font-weight: 700;
+		font-size: 1.1em;
+		color: var(--kb-brown);
+	}
+
+	.result-label {
+		color: #666;
+	}
+
+	.result-value {
+		color: #333;
+		font-weight: 600;
 	}
 </style>
 </head>
 
 <body>
-<div data-theme="b">
-	<!-- HOME PAGE -->
+<div data-theme="a">
+	<!-- 홈 화면 -->
 	<div data-role="page" id="home">
-		<div data-role="header" data-theme="b" data-position="fixed">
-			<h1>My Dream Company</h1>
+		<div data-role="header" data-position="fixed" data-theme="a">
+			<div class="kb-logo-header">
+				<div class="kb-logo">KO국O은행</div>
+				<div class="kb-subtitle">KB Star Banking</div>
+			</div>
 		</div>
-		<div data-role="content">
-			<div class="hero-section">
-				<div class="company-logo">
-					<i class="fab fa-google" style="color: #4285f4;"></i>
+		
+		<div data-role="content" style="padding: 0;">
+			<div class="user-info-card">
+				<div class="user-greeting">
+					안녕하세요, 강**님 👋
 				</div>
-				<h2>Google</h2>
-				<p>Organizing the world's information</p>
-				<p style="font-size: 0.9em; opacity: 0.9;">지원 직무: Software Engineer</p>
+				<div class="account-balance">
+					<div class="account-label">KB입출금통장</div>
+					<div class="balance-amount">340,030<span style="font-size: 0.6em;">원</span></div>
+					<div class="balance-subtext">계좌번호 123-456-789012</div>
+				</div>
+			</div>
+
+			<div class="menu-grid">
+				<a href="#transfer" class="menu-item">
+					<div class="menu-icon"><i class="fas fa-exchange-alt"></i></div>
+					<div class="menu-text">이체</div>
+				</a>
+				<a href="#accounts" class="menu-item">
+					<div class="menu-icon"><i class="fas fa-wallet"></i></div>
+					<div class="menu-text">조회</div>
+				</a>
+				<a href="#loan" class="menu-item">
+					<div class="menu-icon"><i class="fas fa-hand-holding-usd"></i></div>
+					<div class="menu-text">대출</div>
+				</a>
+				<a href="#card" class="menu-item">
+					<div class="menu-icon"><i class="fas fa-credit-card"></i></div>
+					<div class="menu-text">카드</div>
+				</a>
+				<a href="#stock" class="menu-item">
+					<div class="menu-icon"><i class="fas fa-chart-line"></i></div>
+					<div class="menu-text">증권</div>
+				</a>
+				<a href="#insurance" class="menu-item">
+					<div class="menu-icon"><i class="fas fa-shield-alt"></i></div>
+					<div class="menu-text">보험</div>
+				</a>
+				<a href="#company" class="menu-item">
+					<div class="menu-icon"><i class="fas fa-building"></i></div>
+					<div class="menu-text">회사소개</div>
+				</a>
+				<a href="#more" class="menu-item">
+					<div class="menu-icon"><i class="fas fa-ellipsis-h"></i></div>
+					<div class="menu-text">전체</div>
+				</a>
+			</div>
+
+			<div class="quick-section">
+				<div class="section-title">
+					<i class="fas fa-bolt" style="color: var(--kb-yellow);"></i>
+					빠른 이체
+				</div>
+				<div class="quick-contacts">
+					<div class="contact-item">
+						<div class="contact-avatar"><i class="fas fa-user"></i></div>
+						<div class="contact-name">엄마</div>
+					</div>
+					<div class="contact-item">
+						<div class="contact-avatar"><i class="fas fa-user"></i></div>
+						<div class="contact-name">아빠</div>
+					</div>
+					<div class="contact-item">
+						<div class="contact-avatar"><i class="fas fa-user"></i></div>
+						<div class="contact-name">동생</div>
+					</div>
+					<div class="contact-item">
+						<div class="contact-avatar"><i class="fas fa-user"></i></div>
+						<div class="contact-name">친구</div>
+					</div>
+					<div class="contact-item">
+						<div class="contact-avatar"><i class="fas fa-plus"></i></div>
+						<div class="contact-name">추가</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="transaction-list">
+				<div class="section-title">
+					<i class="fas fa-history" style="color: var(--kb-brown);"></i>
+					최근 거래내역
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">스타벅스 신촌점</div>
+						<div class="transaction-date">2025.10.01 14:23</div>
+					</div>
+					<div class="transaction-amount amount-minus">-4,500원</div>
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">월급 입금</div>
+						<div class="transaction-date">2025.09.25 09:00</div>
+					</div>
+					<div class="transaction-amount amount-plus">+3,500,000원</div>
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">쿠팡 결제</div>
+						<div class="transaction-date">2025.09.24 22:15</div>
+					</div>
+					<div class="transaction-amount amount-minus">-28,900원</div>
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">김민수님 입금</div>
+						<div class="transaction-date">2025.09.23 11:30</div>
+					</div>
+					<div class="transaction-amount amount-plus">+50,000원</div>
+				</div>
+			</div>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-theme="a">
+			<div class="footer-nav">
+				<a href="#home" class="footer-item active">
+					<i class="fas fa-home"></i>
+					<span>홈</span>
+				</a>
+				<a href="#accounts" class="footer-item">
+					<i class="fas fa-list"></i>
+					<span>조회</span>
+				</a>
+				<a href="#transfer" class="footer-item">
+					<i class="fas fa-exchange-alt"></i>
+					<span>이체</span>
+				</a>
+				<a href="#company" class="footer-item">
+					<i class="fas fa-building"></i>
+					<span>회사</span>
+				</a>
+				<a href="#more" class="footer-item">
+					<i class="fas fa-bars"></i>
+					<span>더보기</span>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- 이체 페이지 -->
+	<div data-role="page" id="transfer">
+		<div data-role="header" data-theme="a">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">뒤로</a>
+			<h1>이체하기</h1>
+		</div>
+		
+		<div data-role="content">
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-info-circle" style="color: var(--kb-yellow);"></i>
+					이체 안내
+				</div>
+				<div class="service-desc">
+					KB국민은행 고객님께 안전하고 빠른 이체 서비스를 제공합니다.
+					타행 이체는 실시간으로 처리됩니다.
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="form-label">출금 계좌</label>
+				<div class="account-select">
+					<div class="account-name">KB입출금통장</div>
+					<div class="account-number">123-456-789012</div>
+					<div class="account-balance-small">잔액 5,847,320원</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="form-label">받는 분 은행</label>
+				<select class="form-input">
+					<option>KB국민은행</option>
+					<option>신한은행</option>
+					<option>우리은행</option>
+					<option>하나은행</option>
+					<option>NH농협은행</option>
+					<option>IBK기업은행</option>
+					<option>카카오뱅크</option>
+					<option>토스뱅크</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label class="form-label">받는 분 계좌번호</label>
+				<input type="text" class="form-input" placeholder="- 없이 입력해주세요" />
+			</div>
+
+			<div class="form-group">
+				<label class="form-label">이체 금액</label>
+				<input type="text" class="form-input" placeholder="금액을 입력하세요" />
+			</div>
+
+			<div class="form-group">
+				<label class="form-label">받는 분 통장 메모</label>
+				<input type="text" class="form-input" placeholder="예: 김지원" />
+			</div>
+
+			<a href="#transfer-confirm" class="kb-button">다음</a>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-theme="a">
+			<div class="footer-nav">
+				<a href="#home" class="footer-item">
+					<i class="fas fa-home"></i>
+					<span>홈</span>
+				</a>
+				<a href="#accounts" class="footer-item">
+					<i class="fas fa-list"></i>
+					<span>조회</span>
+				</a>
+				<a href="#transfer" class="footer-item active">
+					<i class="fas fa-exchange-alt"></i>
+					<span>이체</span>
+				</a>
+				<a href="#company" class="footer-item">
+					<i class="fas fa-building"></i>
+					<span>회사</span>
+				</a>
+				<a href="#more" class="footer-item">
+					<i class="fas fa-bars"></i>
+					<span>더보기</span>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- 이체 확인 페이지 -->
+	<div data-role="page" id="transfer-confirm">
+		<div data-role="header" data-theme="a">
+			<a href="#transfer" data-icon="arrow-l" data-direction="reverse">뒤로</a>
+			<h1>이체 확인</h1>
+		</div>
+		
+		<div data-role="content">
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-check-circle" style="color: var(--kb-yellow);"></i>
+					이체 정보를 확인해주세요
+				</div>
+			</div>
+
+			<div class="result-detail">
+				<div class="result-row">
+					<span class="result-label">출금 계좌</span>
+					<span class="result-value">KB 123-456-789012</span>
+				</div>
+				<div class="result-row">
+					<span class="result-label">받는 분</span>
+					<span class="result-value">홍길동</span>
+				</div>
+				<div class="result-row">
+					<span class="result-label">받는 계좌</span>
+					<span class="result-value">신한 110-123-456789</span>
+				</div>
+				<div class="result-row">
+					<span class="result-label">이체 금액</span>
+					<span class="result-value" style="color: var(--kb-brown);">100,000원</span>
+				</div>
+			</div>
+
+			<a href="#transfer-result" class="kb-button">이체하기</a>
+		</div>
+	</div>
+
+	<!-- 이체 완료 페이지 -->
+	<div data-role="page" id="transfer-result">
+		<div data-role="header" data-theme="a">
+			<h1>이체 완료</h1>
+		</div>
+		
+		<div data-role="content">
+			<div class="result-icon">
+				<i class="fas fa-check"></i>
+			</div>
+			
+			<div class="result-message">
+				이체가 완료되었습니다
+			</div>
+
+			<div class="result-detail">
+				<div class="result-row">
+					<span class="result-label">받는 분</span>
+					<span class="result-value">홍길동</span>
+				</div>
+				<div class="result-row">
+					<span class="result-label">받는 계좌</span>
+					<span class="result-value">신한 110-123-456789</span>
+				</div>
+				<div class="result-row">
+					<span class="result-label">이체 금액</span>
+					<span class="result-value">100,000원</span>
+				</div>
+				<div class="result-row">
+					<span class="result-label">거래 시간</span>
+					<span class="result-value">2025.10.01 15:32:18</span>
+				</div>
+				<div class="result-row">
+					<span class="result-label">출금 후 잔액</span>
+					<span class="result-value">5,747,320원</span>
+				</div>
+			</div>
+
+			<a href="#home" class="kb-button">확인</a>
+		</div>
+	</div>
+
+	<!-- 계좌 조회 페이지 -->
+	<div data-role="page" id="accounts">
+		<div data-role="header" data-theme="a">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">뒤로</a>
+			<h1>계좌 조회</h1>
+		</div>
+		
+		<div data-role="content">
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-wallet" style="color: var(--kb-yellow);"></i>
+					내 계좌 현황
+				</div>
+				<div class="service-desc">
+					보유하신 모든 계좌를 한눈에 확인하세요.
+				</div>
+			</div>
+
+			<div class="account-select" style="margin: 15px 0;">
+				<div class="account-name">
+					<i class="fas fa-university" style="color: var(--kb-yellow); margin-right: 8px;"></i>
+					KB입출금통장
+				</div>
+				<div class="account-number">123-456-789012</div>
+				<div class="account-balance-small">잔액 5,847,320원</div>
+			</div>
+
+			<div class="account-select" style="margin: 15px 0;">
+				<div class="account-name">
+					<i class="fas fa-piggy-bank" style="color: var(--kb-yellow); margin-right: 8px;"></i>
+					KB적금통장
+				</div>
+				<div class="account-number">123-456-111222</div>
+				<div class="account-balance-small">잔액 12,450,000원</div>
+			</div>
+
+			<div class="account-select" style="margin: 15px 0;">
+				<div class="account-name">
+					<i class="fas fa-chart-pie" style="color: var(--kb-yellow); margin-right: 8px;"></i>
+					KB저축예금
+				</div>
+				<div class="account-number">123-456-333444</div>
+				<div class="account-balance-small">잔액 8,230,500원</div>
+			</div>
+
+			<div class="transaction-list" style="margin-top: 30px;">
+				<div class="section-title">
+					<i class="fas fa-receipt" style="color: var(--kb-brown);"></i>
+					전체 거래내역
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">스타벅스 신촌점</div>
+						<div class="transaction-date">2025.10.01 14:23 | KB입출금통장</div>
+					</div>
+					<div class="transaction-amount amount-minus">-4,500원</div>
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">월급 입금</div>
+						<div class="transaction-date">2025.09.25 09:00 | KB입출금통장</div>
+					</div>
+					<div class="transaction-amount amount-plus">+3,500,000원</div>
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">적금 이체</div>
+						<div class="transaction-date">2025.09.25 09:05 | KB적금통장</div>
+					</div>
+					<div class="transaction-amount amount-plus">+500,000원</div>
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">쿠팡 결제</div>
+						<div class="transaction-date">2025.09.24 22:15 | KB입출금통장</div>
+					</div>
+					<div class="transaction-amount amount-minus">-28,900원</div>
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">이자 입금</div>
+						<div class="transaction-date">2025.09.20 00:00 | KB저축예금</div>
+					</div>
+					<div class="transaction-amount amount-plus">+23,400원</div>
+				</div>
+			</div>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-theme="a">
+			<div class="footer-nav">
+				<a href="#home" class="footer-item">
+					<i class="fas fa-home"></i>
+					<span>홈</span>
+				</a>
+				<a href="#accounts" class="footer-item active">
+					<i class="fas fa-list"></i>
+					<span>조회</span>
+				</a>
+				<a href="#transfer" class="footer-item">
+					<i class="fas fa-exchange-alt"></i>
+					<span>이체</span>
+				</a>
+				<a href="#company" class="footer-item">
+					<i class="fas fa-building"></i>
+					<span>회사</span>
+				</a>
+				<a href="#more" class="footer-item">
+					<i class="fas fa-bars"></i>
+					<span>더보기</span>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- 대출 페이지 -->
+	<div data-role="page" id="loan">
+		<div data-role="header" data-theme="a">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">뒤로</a>
+			<h1>대출 서비스</h1>
+		</div>
+		
+		<div data-role="content">
+			<div class="company-hero" style="margin: -15px -15px 20px -15px;">
+				<div style="font-size: 2.5em; margin-bottom: 10px;">
+					<i class="fas fa-hand-holding-usd"></i>
+				</div>
+				<div style="font-size: 1.4em; font-weight: 700; margin-bottom: 10px;">
+					KB국민은행 대출
+				</div>
+				<div style="font-size: 1em; opacity: 0.9;">
+					고객님의 꿈을 함께 이루어갑니다
+				</div>
+			</div>
+
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-home" style="color: var(--kb-yellow);"></i>
+					주택담보대출
+				</div>
+				<div class="service-desc">
+					최저 연 3.5%의 금리로 내 집 마련의 꿈을 실현하세요. 최대 5억원까지 대출 가능합니다.
+				</div>
+				<div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+					<div style="display: flex; justify-content: space-between; margin: 8px 0;">
+						<span style="color: #666;">대출금리</span>
+						<span style="font-weight: 700; color: var(--kb-brown);">연 3.5% ~ 4.5%</span>
+					</div>
+					<div style="display: flex; justify-content: space-between; margin: 8px 0;">
+						<span style="color: #666;">대출한도</span>
+						<span style="font-weight: 700; color: var(--kb-brown);">최대 5억원</span>
+					</div>
+					<div style="display: flex; justify-content: space-between; margin: 8px 0;">
+						<span style="color: #666;">대출기간</span>
+						<span style="font-weight: 700; color: var(--kb-brown);">최대 30년</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-graduation-cap" style="color: var(--kb-yellow);"></i>
+					KB청년대출
+				</div>
+				<div class="service-desc">
+					만 19세~34세 청년을 위한 특별 대출 상품입니다. 저금리로 목돈 마련을 도와드립니다.
+				</div>
+				<div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+					<div style="display: flex; justify-content: space-between; margin: 8px 0;">
+						<span style="color: #666;">대출금리</span>
+						<span style="font-weight: 700; color: var(--kb-brown);">연 3.0% ~ 3.8%</span>
+					</div>
+					<div style="display: flex; justify-content: space-between; margin: 8px 0;">
+						<span style="color: #666;">대출한도</span>
+						<span style="font-weight: 700; color: var(--kb-brown);">최대 3,000만원</span>
+					</div>
+					<div style="display: flex; justify-content: space-between; margin: 8px 0;">
+						<span style="color: #666;">대출기간</span>
+						<span style="font-weight: 700; color: var(--kb-brown);">최대 5년</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-briefcase" style="color: var(--kb-yellow);"></i>
+					신용대출
+				</div>
+				<div class="service-desc">
+					담보 없이 신용도만으로 빠르게 대출받으세요. 당일 실행 가능합니다.
+				</div>
+				<div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+					<div style="display: flex; justify-content: space-between; margin: 8px 0;">
+						<span style="color: #666;">대출금리</span>
+						<span style="font-weight: 700; color: var(--kb-brown);">연 4.5% ~ 12.0%</span>
+					</div>
+					<div style="display: flex; justify-content: space-between; margin: 8px 0;">
+						<span style="color: #666;">대출한도</span>
+						<span style="font-weight: 700; color: var(--kb-brown);">최대 1억원</span>
+					</div>
+					<div style="display: flex; justify-content: space-between; margin: 8px 0;">
+						<span style="color: #666;">대출기간</span>
+						<span style="font-weight: 700; color: var(--kb-brown);">최대 5년</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-theme="a">
+			<div class="footer-nav">
+				<a href="#home" class="footer-item">
+					<i class="fas fa-home"></i>
+					<span>홈</span>
+				</a>
+				<a href="#accounts" class="footer-item">
+					<i class="fas fa-list"></i>
+					<span>조회</span>
+				</a>
+				<a href="#transfer" class="footer-item">
+					<i class="fas fa-exchange-alt"></i>
+					<span>이체</span>
+				</a>
+				<a href="#company" class="footer-item">
+					<i class="fas fa-building"></i>
+					<span>회사</span>
+				</a>
+				<a href="#more" class="footer-item">
+					<i class="fas fa-bars"></i>
+					<span>더보기</span>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- 카드 페이지 -->
+	<div data-role="page" id="card">
+		<div data-role="header" data-theme="a">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">뒤로</a>
+			<h1>카드 서비스</h1>
+		</div>
+		
+		<div data-role="content">
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-credit-card" style="color: var(--kb-yellow);"></i>
+					보유 카드
+				</div>
+			</div>
+
+			<div class="account-select" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; margin: 15px 0;">
+				<div class="account-name" style="color: white; font-size: 1.1em;">
+					KB국민 골드체크카드
+				</div>
+				<div class="account-number" style="color: rgba(255,255,255,0.8); margin: 10px 0;">
+					1234-5678-****-****
+				</div>
+				<div style="display: flex; justify-content: space-between; margin-top: 15px;">
+					<span style="color: rgba(255,255,255,0.9);">이번 달 사용액</span>
+					<span style="font-weight: 700; font-size: 1.2em;">847,200원</span>
+				</div>
+			</div>
+
+			<div class="transaction-list" style="margin-top: 20px;">
+				<div class="section-title">
+					<i class="fas fa-history" style="color: var(--kb-brown);"></i>
+					최근 카드 사용내역
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">스타벅스 신촌점</div>
+						<div class="transaction-date">2025.10.01 14:23 | 일시불</div>
+					</div>
+					<div class="transaction-amount amount-minus">-4,500원</div>
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">GS25 편의점</div>
+						<div class="transaction-date">2025.09.30 21:10 | 일시불</div>
+					</div>
+					<div class="transaction-amount amount-minus">-8,700원</div>
+				</div>
+				<div class="transaction-item">
+					<div class="transaction-info">
+						<div class="transaction-title">올리브영 강남점</div>
+						<div class="transaction-date">2025.09.29 18:45 | 일시불</div>
+					</div>
+					<div class="transaction-amount amount-minus">-45,000원</div>
+				</div>
+			</div>
+
+			<div class="service-card" style="margin-top: 20px;">
+				<div class="service-title">
+					<i class="fas fa-gift" style="color: var(--kb-yellow);"></i>
+					이달의 카드 혜택
+				</div>
+				<div class="service-desc">
+					• 스타벅스 10% 할인 (월 1만원 한도)<br>
+					• 주유 리터당 100원 할인<br>
+					• 편의점 5% 할인 (월 5천원 한도)<br>
+					• 대중교통 10% 캐시백
+				</div>
+			</div>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-theme="a">
+			<div class="footer-nav">
+				<a href="#home" class="footer-item">
+					<i class="fas fa-home"></i>
+					<span>홈</span>
+				</a>
+				<a href="#accounts" class="footer-item">
+					<i class="fas fa-list"></i>
+					<span>조회</span>
+				</a>
+				<a href="#transfer" class="footer-item">
+					<i class="fas fa-exchange-alt"></i>
+					<span>이체</span>
+				</a>
+				<a href="#company" class="footer-item">
+					<i class="fas fa-building"></i>
+					<span>회사</span>
+				</a>
+				<a href="#more" class="footer-item">
+					<i class="fas fa-bars"></i>
+					<span>더보기</span>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- 증권 페이지 -->
+	<div data-role="page" id="stock">
+		<div data-role="header" data-theme="a">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">뒤로</a>
+			<h1>KB증권 서비스</h1>
+		</div>
+		
+		<div data-role="content">
+			<div class="company-hero" style="margin: -15px -15px 20px -15px;">
+				<div style="font-size: 2.5em; margin-bottom: 10px;">
+					<i class="fas fa-chart-line"></i>
+				</div>
+				<div style="font-size: 1.4em; font-weight: 700; margin-bottom: 10px;">
+					KB증권 계좌
+				</div>
+				<div style="font-size: 1em; opacity: 0.9;">
+					총 평가금액 15,428,000원
+				</div>
+				<div style="font-size: 0.9em; opacity: 0.8; margin-top: 5px;">
+					수익률 +8.5% (+1,208,000원)
+				</div>
+			</div>
+
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-chart-pie" style="color: var(--kb-yellow);"></i>
+					보유 종목
+				</div>
+			</div>
+
+			<div class="transaction-item" style="background: white; padding: 15px; border-radius: 12px; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+				<div class="transaction-info">
+					<div class="transaction-title">삼성전자</div>
+					<div class="transaction-date">20주 보유 | 평균 65,000원</div>
+				</div>
+				<div>
+					<div style="font-weight: 700; color: #FF3B30; text-align: right;">+12.3%</div>
+					<div style="font-size: 0.9em; color: #666; text-align: right;">1,460,000원</div>
+				</div>
+			</div>
+
+			<div class="transaction-item" style="background: white; padding: 15px; border-radius: 12px; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+				<div class="transaction-info">
+					<div class="transaction-title">NAVER</div>
+					<div class="transaction-date">10주 보유 | 평균 210,000원</div>
+				</div>
+				<div>
+					<div style="font-weight: 700; color: #FF3B30; text-align: right;">+8.5%</div>
+					<div style="font-size: 0.9em; color: #666; text-align: right;">2,278,500원</div>
+				</div>
+			</div>
+
+			<div class="transaction-item" style="background: white; padding: 15px; border-radius: 12px; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+				<div class="transaction-info">
+					<div class="transaction-title">카카오</div>
+					<div class="transaction-date">30주 보유 | 평균 48,000원</div>
+				</div>
+				<div>
+					<div style="font-weight: 700; color: #0066FF; text-align: right;">-3.2%</div>
+					<div style="font-size: 0.9em; color: #666; text-align: right;">1,396,800원</div>
+				</div>
+			</div>
+
+			<div class="service-card" style="margin-top: 20px;">
+				<div class="service-title">
+					<i class="fas fa-newspaper" style="color: var(--kb-yellow);"></i>
+					오늘의 투자 정보
+				</div>
+				<div class="service-desc">
+					<strong style="color: var(--kb-brown);">KOSPI</strong> 2,654.28 ▲15.32 (+0.58%)<br>
+					<strong style="color: var(--kb-brown);">KOSDAQ</strong> 875.42 ▲8.21 (+0.95%)<br>
+					<strong style="color: var(--kb-brown);">환율</strong> 1,325.50원 ▼2.30 (-0.17%)
+				</div>
+			</div>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-theme="a">
+			<div class="footer-nav">
+				<a href="#home" class="footer-item">
+					<i class="fas fa-home"></i>
+					<span>홈</span>
+				</a>
+				<a href="#accounts" class="footer-item">
+					<i class="fas fa-list"></i>
+					<span>조회</span>
+				</a>
+				<a href="#transfer" class="footer-item">
+					<i class="fas fa-exchange-alt"></i>
+					<span>이체</span>
+				</a>
+				<a href="#company" class="footer-item">
+					<i class="fas fa-building"></i>
+					<span>회사</span>
+				</a>
+				<a href="#more" class="footer-item">
+					<i class="fas fa-bars"></i>
+					<span>더보기</span>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- 보험 페이지 -->
+	<div data-role="page" id="insurance">
+		<div data-role="header" data-theme="a">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">뒤로</a>
+			<h1>보험 서비스</h1>
+		</div>
+		
+		<div data-role="content">
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-shield-alt" style="color: var(--kb-yellow);"></i>
+					KB손해보험 가입 상품
+				</div>
+			</div>
+
+			<div class="account-select" style="margin: 15px 0;">
+				<div class="account-name">
+					<i class="fas fa-car" style="color: var(--kb-yellow); margin-right: 8px;"></i>
+					KB자동차보험
+				</div>
+				<div class="account-number">증권번호 2025-1234-5678</div>
+				<div style="margin-top: 10px; color: #666; font-size: 0.9em;">
+					월 납입액: 125,000원 | 만기일: 2025.12.31
+				</div>
+			</div>
+
+			<div class="account-select" style="margin: 15px 0;">
+				<div class="account-name">
+					<i class="fas fa-heartbeat" style="color: var(--kb-yellow); margin-right: 8px;"></i>
+					KB실손의료보험
+				</div>
+				<div class="account-number">증권번호 2024-8765-4321</div>
+				<div style="margin-top: 10px; color: #666; font-size: 0.9em;">
+					월 납입액: 45,800원 | 만기일: 2029.03.15
+				</div>
+			</div>
+
+			<div class="service-card" style="margin-top: 30px;">
+				<div class="service-title">
+					<i class="fas fa-plus-circle" style="color: var(--kb-yellow);"></i>
+					추천 보험 상품
+				</div>
+			</div>
+
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-umbrella" style="color: var(--kb-yellow);"></i>
+					종합보험
+				</div>
+				<div class="service-desc">
+					암, 뇌졸중, 급성심근경색 등 3대 질병을 집중 보장하는 종합 건강보험입니다.
+				</div>
+				<div style="margin-top: 15px; font-weight: 700; color: var(--kb-brown);">
+					월 납입액 78,000원부터
+				</div>
+			</div>
+
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-baby" style="color: var(--kb-yellow);"></i>
+					어린이보험
+				</div>
+				<div class="service-desc">
+					자녀의 건강한 성장을 위한 맞춤형 보험 상품입니다. 출생 전부터 가입 가능합니다.
+				</div>
+				<div style="margin-top: 15px; font-weight: 700; color: var(--kb-brown);">
+					월 납입액 32,000원부터
+				</div>
+			</div>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-theme="a">
+			<div class="footer-nav">
+				<a href="#home" class="footer-item">
+					<i class="fas fa-home"></i>
+					<span>홈</span>
+				</a>
+				<a href="#accounts" class="footer-item">
+					<i class="fas fa-list"></i>
+					<span>조회</span>
+				</a>
+				<a href="#transfer" class="footer-item">
+					<i class="fas fa-exchange-alt"></i>
+					<span>이체</span>
+				</a>
+				<a href="#company" class="footer-item">
+					<i class="fas fa-building"></i>
+					<span>회사</span>
+				</a>
+				<a href="#more" class="footer-item">
+					<i class="fas fa-bars"></i>
+					<span>더보기</span>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- 회사 소개 페이지 -->
+	<div data-role="page" id="company">
+		<div data-role="header" data-theme="a">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">뒤로</a>
+			<h1>KB국민은행 소개</h1>
+		</div>
+		
+		<div data-role="content">
+			<div class="company-hero">
+				<div class="company-logo-big">KB</div>
+				<div class="company-slogan">함께 성장하는 금융 파트너</div>
+				<div style="font-size: 0.95em; margin-top: 10px; opacity: 0.9;">
+					대한민국 1위 종합금융그룹
+				</div>
 			</div>
 
 			<div class="stats-grid">
-				<div class="stat-item">
-					<div class="number">150K+</div>
-					<div class="label">직원 수</div>
+				<div class="stat-box">
+					<div class="stat-number">2,800만</div>
+					<div class="stat-label">고객 수</div>
 				</div>
-				<div class="stat-item">
-					<div class="number">$280B</div>
-					<div class="label">연 매출</div>
+				<div class="stat-box">
+					<div class="stat-number">1,200</div>
+					<div class="stat-label">영업점</div>
 				</div>
-				<div class="stat-item">
-					<div class="number">1998</div>
-					<div class="label">설립연도</div>
+				<div class="stat-box">
+					<div class="stat-number">60년</div>
+					<div class="stat-label">역사</div>
 				</div>
 			</div>
 
-			<div class="menu-cards">
-				<a href="#intro" class="menu-card">
+			<div data-role="collapsible-set" data-theme="a" data-content-theme="e">
+				<div data-role="collapsible" data-collapsed="false">
+					<h3><i class="fas fa-building"></i> 회사 개요</h3>
+					<ul class="info-list">
+						<li><strong>설립:</strong> 1963년 2월 1일</li>
+						<li><strong>본점:</strong> 서울특별시 중구 남대문로 84</li>
+						<li><strong>대표이사:</strong> 양종희</li>
+						<li><strong>직원 수:</strong> 약 20,000명</li>
+						<li><strong>자산규모:</strong> 600조원 이상 (국내 1위)</li>
+						<li><strong>영업점:</strong> 국내 1,200개 지점, 해외 30개 지점</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-history"></i> 주요 연혁</h3>
+					<ul class="info-list">
+						<li><strong>1963:</strong> 국민은행 설립</li>
+						<li><strong>2001:</strong> 주택은행과 합병, KB금융그룹 출범</li>
+						<li><strong>2008:</strong> 카드사 인수로 종합금융그룹 도약</li>
+						<li><strong>2011:</strong> KB증권 설립</li>
+						<li><strong>2015:</strong> KB손해보험 출범</li>
+						<li><strong>2020:</strong> 디지털 혁신 가속화, KB스타뱅킹 고도화</li>
+						<li><strong>2023:</strong> AI 기반 맞춤형 금융 서비스 확대</li>
+						<li><strong>2024:</strong> ESG 경영 선도, 녹색금융 1위 달성</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-trophy"></i> 주요 서비스</h3>
+					<ul class="info-list">
+						<li><strong>예금·적금:</strong> 다양한 저축 상품으로 자산 형성 지원</li>
+						<li><strong>대출:</strong> 주택담보, 신용, 전세자금 등 맞춤형 대출</li>
+						<li><strong>외환:</strong> 환전, 해외송금, 외화예금 서비스</li>
+						<li><strong>펀드·보험:</strong> 투자 상품 및 보험 상품 판매</li>
+						<li><strong>카드:</strong> 체크·신용카드 및 다양한 혜택</li>
+						<li><strong>증권:</strong> 주식, 펀드, 채권 등 투자 서비스</li>
+						<li><strong>모바일뱅킹:</strong> KB스타뱅킹 앱으로 편리한 금융생활</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-star"></i> 기업 문화</h3>
+					<ul class="info-list">
+						<li><strong>고객 최우선:</strong> 고객의 행복을 최우선 가치로</li>
+						<li><strong>디지털 혁신:</strong> AI, 빅데이터 기반 금융 서비스</li>
+						<li><strong>ESG 경영:</strong> 환경·사회·지배구조 책임 경영</li>
+						<li><strong>인재 육성:</strong> 체계적 교육과 글로벌 인재 양성</li>
+						<li><strong>상생 경영:</strong> 중소기업, 소상공인 지원 확대</li>
+						<li><strong>사회 공헌:</strong> 금융 소외계층 지원 및 지역사회 공헌</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-lightbulb"></i> 채용 정보</h3>
+					<ul class="info-list">
+						<li><strong>신입 공채:</strong> 연 2회 (상·하반기)</li>
+						<li><strong>경력 채용:</strong> 수시 채용 (디지털, IT 인재)</li>
+						<li><strong>인턴십:</strong> 방학 중 인턴 프로그램 운영</li>
+						<li><strong>복지:</strong> 경쟁력 있는 연봉, 4대보험, 주택자금 지원</li>
+						<li><strong>교육:</strong> KB금융아카데미를 통한 전문성 강화</li>
+						<li><strong>근무환경:</strong> 워라밸 보장, 유연근무제 시행</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="service-card" style="margin-top: 20px;">
+				<div class="service-title">
+					<i class="fas fa-video" style="color: var(--kb-yellow);"></i>
+					KB국민은행 소개 영상
+				</div>
+				<div style="margin-top: 15px; border-radius: 12px; overflow: hidden;">
+					<iframe width="100%" height="200" src="https://www.youtube.com/embed/VKrLYrLMC9w" frameborder="0" allowfullscreen></iframe>
+				</div>
+			</div>
+
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-heart" style="color: var(--kb-yellow);"></i>
+					나의 지원 동기
+				</div>
+				<div class="service-desc" style="line-height: 1.8;">
+					KB국민은행은 대한민국을 대표하는 금융기관으로서 60년의 역사와 전통을 자랑합니다. 
+					단순히 금융 상품을 판매하는 것을 넘어, 고객의 인생 여정에 함께하는 든든한 파트너로 자리잡고 있습니다.
+					<br><br>
+					저는 KB국민은행의 <strong style="color: var(--kb-brown);">'디지털 혁신'</strong>과 <strong style="color: var(--kb-brown);">'고객 중심 경영'</strong> 철학에 깊이 공감합니다. 
+					AI와 빅데이터를 활용한 맞춤형 금융 서비스는 금융의 미래를 선도하고 있으며, 
+					이러한 혁신의 현장에서 함께 성장하고 싶습니다.
+					<br><br>
+					또한 KB금융그룹의 <strong style="color: var(--kb-brown);">ESG 경영</strong>과 사회적 책임 실천에 감명받았습니다. 
+					금융의 힘으로 더 나은 사회를 만들어가는 비전에 저의 열정을 보태고 싶습니다.
+					<br><br>
+					<strong style="color: var(--kb-brown);">KB국민은행과 함께 성장하며, 고객에게 신뢰받는 금융인이 되겠습니다.</strong>
+				</div>
+			</div>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-theme="a">
+			<div class="footer-nav">
+				<a href="#home" class="footer-item">
+					<i class="fas fa-home"></i>
+					<span>홈</span>
+				</a>
+				<a href="#accounts" class="footer-item">
+					<i class="fas fa-list"></i>
+					<span>조회</span>
+				</a>
+				<a href="#transfer" class="footer-item">
+					<i class="fas fa-exchange-alt"></i>
+					<span>이체</span>
+				</a>
+				<a href="#company" class="footer-item active">
 					<i class="fas fa-building"></i>
-					<h3>회사 소개</h3>
-					<p>Google의 비전과 가치</p>
+					<span>회사</span>
 				</a>
-				<a href="#culture" class="menu-card">
-					<i class="fas fa-users"></i>
-					<h3>기업 문화</h3>
-					<p>일하는 방식과 복지</p>
-				</a>
-				<a href="#video" class="menu-card" data-rel="dialog">
-					<i class="fas fa-video"></i>
-					<h3>회사 영상</h3>
-					<p>Google 소개 동영상</p>
-				</a>
-				<a href="#motivation" class="menu-card" data-rel="dialog">
-					<i class="fas fa-heart"></i>
-					<h3>지원 동기</h3>
-					<p>왜 Google인가</p>
-				</a>
-				<a href="#gallery" class="menu-card">
-					<i class="fas fa-images"></i>
-					<h3>오피스 갤러리</h3>
-					<p>Google 캠퍼스 사진</p>
-				</a>
-				<a href="#products" class="menu-card">
-					<i class="fas fa-rocket"></i>
-					<h3>주요 제품</h3>
-					<p>혁신적인 서비스들</p>
+				<a href="#more" class="footer-item">
+					<i class="fas fa-bars"></i>
+					<span>더보기</span>
 				</a>
 			</div>
 		</div>
-		<div data-role="footer" data-position="fixed" data-theme="b">
-			<div class="footer-content">
-				<i class="fas fa-code"></i>
-				<h4 style="margin: 5px 0;">Portfolio by 김개발</h4>
-			</div>
-		</div>
-	</div>
-	
-	<!-- INTRO PAGE -->
-	<div data-role="page" id="intro" data-theme="b">
-		<div data-role="header" data-theme="b">
-			<a href="#home" data-icon="arrow-l" data-direction="reverse">홈</a>			
-			<h1>회사 소개</h1>
-		</div>
-		<div data-role="content">
-			<div class="content-card">
-				<h3><i class="fas fa-info-circle"></i>Google 소개</h3>
-				<p>Google은 1998년 Larry Page와 Sergey Brin이 스탠퍼드 대학교 박사과정 중 설립한 글로벌 기술 기업입니다. "세상의 모든 정보를 체계화하여 누구나 접근하고 사용할 수 있게 만든다"는 미션 아래 검색엔진을 시작으로 현재는 AI, 클라우드, 모바일 OS, 하드웨어 등 다양한 분야에서 혁신을 이끌고 있습니다.</p>
-			</div>
-
-			<div data-role="collapsible-set" data-theme="b" data-content-theme="e">
-				<div data-role="collapsible" data-collapsed="false">
-					<h3><i class="fas fa-history"></i> 회사 연혁</h3>
-					<ul class="info-list">
-						<li><strong>1998:</strong> Larry Page와 Sergey Brin이 Google 설립</li>
-						<li><strong>2004:</strong> 나스닥 상장, Gmail 출시</li>
-						<li><strong>2005:</strong> Google Maps, Google Earth 출시</li>
-						<li><strong>2006:</strong> YouTube 인수</li>
-						<li><strong>2008:</strong> Android OS 및 Chrome 브라우저 출시</li>
-						<li><strong>2015:</strong> Alphabet Inc. 지주회사 체제로 전환</li>
-						<li><strong>2016:</strong> Google Assistant 및 AI First 전략 발표</li>
-						<li><strong>2023:</strong> Gemini AI 모델 발표, AI 혁신 가속화</li>
-					</ul>
-				</div>
-				<div data-role="collapsible">
-					<h3><i class="fas fa-crosshairs"></i> 핵심 가치</h3>
-					<ul class="info-list">
-						<li><strong>사용자 최우선:</strong> 사용자 경험을 최우선으로 생각하는 제품 철학</li>
-						<li><strong>혁신과 도전:</strong> 20% 프로젝트를 통한 창의적 실험 문화</li>
-						<li><strong>개방성:</strong> 오픈소스 기여와 지식 공유</li>
-						<li><strong>데이터 기반 의사결정:</strong> 측정 가능한 지표로 검증</li>
-						<li><strong>다양성과 포용:</strong> 전 세계 인재들의 다양한 관점 존중</li>
-						<li><strong>Don't be evil:</strong> 윤리적 기술 개발과 사회적 책임</li>
-					</ul>
-				</div>
-				<div data-role="collapsible">
-					<h3><i class="fas fa-globe"></i> 글로벌 임팩트</h3>
-					<p><strong>일일 사용자 수:</strong> Google 검색 일일 사용자 85억 명 이상</p>
-					<p><strong>제품 생태계:</strong> 9개 제품이 각각 10억 명 이상의 사용자 보유 (Search, YouTube, Maps, Gmail, Android, Chrome, Play Store, Google Drive, Google Photos)</p>
-					<p><strong>AI 연구:</strong> DeepMind와 Google Research를 통해 AlphaGo, AlphaFold 등 획기적인 AI 기술 개발</p>
-					<p><strong>클라우드 서비스:</strong> Google Cloud Platform으로 전 세계 기업들의 디지털 전환 지원</p>
-					<p><strong>지속가능성:</strong> 2030년까지 탄소 중립 달성 목표, 재생 에너지 100% 사용</p>
-				</div>
-			</div>
-		</div>
-		<div data-role="footer" data-position="fixed" data-theme="b">
-			<div class="footer-content">
-				<i class="fas fa-code"></i>
-				<h4 style="margin: 5px 0;">Portfolio by 김개발</h4>
-			</div>
-		</div>		
 	</div>
 
-	<!-- CULTURE PAGE -->
-	<div data-role="page" id="culture" data-theme="b">
-		<div data-role="header" data-theme="b">
-			<a href="#home" data-icon="arrow-l" data-direction="reverse">홈</a>			
-			<h1>기업 문화</h1>
+	<!-- 전체 메뉴 페이지 -->
+	<div data-role="page" id="more">
+		<div data-role="header" data-theme="a">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">뒤로</a>
+			<h1>전체 메뉴</h1>
 		</div>
+		
 		<div data-role="content">
-			<div class="content-card">
-				<h3><i class="fas fa-star"></i>Google의 일하는 방식</h3>
-				<p>Google은 "일하기 좋은 회사" 순위에서 항상 상위권을 차지하며, 혁신적인 기업문화와 복지 제도로 유명합니다. 자율성과 책임감을 바탕으로 한 수평적 조직 문화 속에서 직원들은 최고의 성과를 낼 수 있습니다.</p>
-			</div>
-
-			<div data-role="collapsible-set" data-theme="b" data-content-theme="e">
-				<div data-role="collapsible" data-collapsed="false">
-					<h3><i class="fas fa-lightbulb"></i> 혁신 문화</h3>
-					<ul class="info-list">
-						<li><strong>20% Time:</strong> 업무 시간의 20%를 자신이 원하는 프로젝트에 투자 (Gmail, Google News가 이렇게 탄생)</li>
-						<li><strong>OKR 시스템:</strong> Objectives and Key Results로 목표 관리</li>
-						<li><strong>Fail Fast:</strong> 빠른 실패와 학습을 장려하는 문화</li>
-						<li><strong>Data-Driven:</strong> 모든 의사결정은 데이터와 실험을 기반으로</li>
-						<li><strong>Googleyness:</strong> 호기심, 겸손함, 협업을 중시하는 Google만의 문화</li>
-					</ul>
-				</div>
-				<div data-role="collapsible">
-					<h3><i class="fas fa-gift"></i> 복지 혜택</h3>
-					<ul class="info-list">
-						<li><strong>무료 식사:</strong> 세계적인 셰프들이 준비하는 3식 무료 제공</li>
-						<li><strong>건강 관리:</strong> 사내 피트니스 센터, 의료 서비스, 마사지</li>
-						<li><strong>교육 지원:</strong> 무제한 교육 프로그램 및 컨퍼런스 참가 지원</li>
-						<li><strong>육아 지원:</strong> 최대 18주 유급 육아휴직, 사내 어린이집</li>
-						<li><strong>이동 지원:</strong> 무료 셔틀버스, 전기차 충전소</li>
-						<li><strong>재택근무:</strong> 하이브리드 근무 제도 (주 3일 출근)</li>
-						<li><strong>주식 옵션:</strong> RSU(제한적 주식 단위) 지급</li>
-					</ul>
-				</div>
-				<div data-role="collapsible">
-					<h3><i class="fas fa-building"></i> 근무 환경</h3>
-					<p><strong>Googleplex:</strong> 캘리포니아 마운틴 뷰 본사는 놀이터 같은 오피스로 유명합니다. 수영장, 볼링장, 농구장, 게임룸 등이 있으며, 화려한 색상과 창의적인 공간 디자인이 특징입니다.</p>
-					<p><strong>글로벌 오피스:</strong> 전 세계 70개 이상의 오피스가 있으며, 각 지역의 문화를 반영한 독특한 디자인을 자랑합니다.</p>
-					<p><strong>협업 공간:</strong> 다양한 형태의 미팅룸, 라운지, 카페 공간에서 자유롭게 협업</p>
-					<p><strong>조용한 공간:</strong> 집중 근무를 위한 개인 작업 공간도 충분히 제공</p>
-				</div>
-				<div data-role="collapsible">
-					<h3><i class="fas fa-chart-line"></i> 성장 기회</h3>
-					<ul class="info-list">
-						<li><strong>멘토링:</strong> 시니어 엔지니어와 1:1 멘토링 프로그램</li>
-						<li><strong>내부 이동:</strong> 다양한 팀과 프로젝트로 자유로운 이동 가능</li>
-						<li><strong>글로벌 기회:</strong> 해외 오피스 근무 및 글로벌 프로젝트 참여</li>
-						<li><strong>기술 공유:</strong> 정기적인 Tech Talk, 사내 컨퍼런스</li>
-						<li><strong>오픈소스:</strong> 업무 시간에 오픈소스 프로젝트 기여 가능</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		<div data-role="footer" data-position="fixed" data-theme="b">
-			<div class="footer-content">
-				<i class="fas fa-code"></i>
-				<h4 style="margin: 5px 0;">Portfolio by 김개발</h4>
-			</div>
-		</div>		
-	</div>
-	
-	<!-- VIDEO PAGE -->
-	<div data-role="page" id="video" data-theme="b">
-		<div data-role="header" data-position="fixed" data-theme="b">
-			<h1>Google 영상</h1>
-		</div>
-		<div data-role="content">
-			<div class="media-title">
-				<i class="fas fa-play-circle"></i> Google 공식 소개 영상
-			</div>
-			<div class="media-container">
-				<iframe width="100%" height="240" src="https://www.youtube.com/embed/LoXGsv9fAAw" frameborder="0" allowfullscreen></iframe>
-			</div>
-
-			<div class="media-title">
-				<i class="fas fa-briefcase"></i> Life at Google - 개발자 인터뷰
-			</div>
-			<div class="media-container">
-				<iframe width="100%" height="240" src="https://www.youtube.com/embed/cozFLQFYOH4" frameborder="0" allowfullscreen></iframe>
-			</div>
-
-			<div class="media-title">
-				<i class="fas fa-brain"></i> Google AI 혁신
-			</div>
-			<div class="media-container">
-				<iframe width="100%" height="240" src="https://www.youtube.com/embed/gnaBPBuL02s" frameborder="0" allowfullscreen></iframe>
-			</div>
-		</div>
-		<div data-role="footer" data-theme="b">
-		</div>
-	</div>
-	
-	<!-- MOTIVATION PAGE -->
-	<div data-role="page" id="motivation">
-		<div data-role="header">
-			<h1><i class="fas fa-heart"></i> 지원 동기</h1>
-		</div>
-		<div data-role="content">
-			<div class="content-card">
-				<h3><i class="fas fa-question-circle"></i> 왜 Google인가?</h3>
-				<p>Google은 단순한 IT 회사가 아닌, 전 세계 수십억 명의 삶에 긍정적인 영향을 미치는 기술을 만드는 곳입니다. 저는 다음과 같은 이유로 Google에서 일하고 싶습니다.</p>
-			</div>
-
-			<div class="content-card">
-				<h3><i class="fas fa-globe"></i> 1. 글로벌 임팩트</h3>
-				<p>제가 작성하는 코드 한 줄이 전 세계 수십억 명의 사용자에게 영향을 줄 수 있다는 것은 엔지니어로서 최고의 보람입니다. Google의 제품들은 사람들의 일상을 더 편리하고 효율적으로 만들며, 정보 접근성을 높여 세상을 더 나은 곳으로 만듭니다.</p>
-			</div>
-
-			<div class="content-card">
-				<h3><i class="fas fa-rocket"></i> 2. 기술 혁신의 선두</h3>
-				<p>AI, 머신러닝, 클라우드 컴퓨팅 등 최첨단 기술 분야에서 Google은 항상 선두주자입니다. TensorFlow, Kubernetes, Android 등 오픈소스 프로젝트를 통해 기술 생태계 전체에 기여하는 모습에 깊은 감명을 받았습니다. 이러한 환경에서 최고의 엔지니어들과 함께 일하며 성장하고 싶습니다.</p>
-			</div>
-
-			<div class="content-card">
-				<h3><i class="fas fa-users"></i> 3. 혁신적인 문화</h3>
-				<p>20% 프로젝트, 데이터 기반 의사결정, 실패를 두려워하지 않는 문화는 제가 추구하는 일하는 방식과 완벽하게 일치합니다. 자율성과 책임감을 바탕으로 창의적인 솔루션을 만들어낼 수 있는 환경이야말로 엔지니어가 최고의 성과를 낼 수 있는 곳이라고 믿습니다.</p>
-			</div>
-
-			<div class="content-card">
-				<h3><i class="fas fa-chart-line"></i> 4. 끝없는 학습 기회</h3>
-				<p>Google의 복잡하고 대규모의 시스템을 다루면서 분산 시스템, 성능 최적화, 확장 가능한 아키텍처 설계 등 실무 경험을 쌓고 싶습니다. 또한 세계 최고의 엔지니어들과 협업하며 그들의 문제 해결 방식과 사고방식을 배우고 싶습니다.</p>
-			</div>
-
-			<div class="content-card">
-				<h3><i class="fas fa-seedling"></i> 5. 지속 가능한 미래</h3>
-				<p>Google의 탄소 중립 목표와 재생 에너지 사용, AI를 활용한 기후 변화 대응 등 사회적 책임을 다하는 모습이 인상 깊었습니다. 기술이 수익만이 아닌 더 나은 세상을 만드는 데 사용될 때 진정한 가치가 있다고 생각하며, 그러한 비전을 가진 회사에서 일하고 싶습니다.</p>
-			</div>
-
-			<div class="content-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-				<h3 style="color: white;"><i class="fas fa-quote-left"></i> My Commitment</h3>
-				<p style="font-size: 1.1em; font-style: italic;">"Google에서 저는 단순히 코드를 작성하는 것을 넘어, 혁신을 만들고, 문제를 해결하며, 전 세계 사람들의 삶을 개선하는 데 기여하고 싶습니다. Google의 'Think Big'한 비전과 함께 성장하며, 기술로 세상을 변화시키는 엔지니어가 되겠습니다."</p>
-			</div>
-		</div>
-		<div data-role="footer">
-			<a href="#home" data-direction="reverse">홈으로</a>
-		</div>
-	</div>
-
-	<!-- GALLERY PAGE -->
-	<div data-role="page" id="gallery" data-theme="b">
-		<div data-role="header" data-position="fixed" data-theme="b">
-			<a href="#home" data-icon="arrow-l" data-direction="reverse">홈</a>
-			<h1>오피스 갤러리</h1>
-		</div>
-		<div data-role="content">
-			<div class="content-card">
-				<h3><i class="fas fa-camera"></i>Google의 창의적인 워크스페이스</h3>
-				<p>Google의 오피스는 직원들의 창의성과 협업을 극대화하기 위해 디자인되었습니다. 각 지역의 오피스는 그 지역의 문화를 반영하여 독특한 개성을 가지고 있습니다.</p>
-			</div>
-			
-			<div class="media-title">
-				<i class="fas fa-images"></i> Googleplex & Global Offices
-			</div>
-			
-			<ul class="picture">
-				<li>
-					<a href="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=400" alt="Google Office" />
-					</a>
-				</li>
-				<li>
-					<a href="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400" alt="Modern Workspace" />
-					</a>
-				</li>
-				<li>
-					<a href="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400" alt="Collaboration Space" />
-					</a>
-				</li>
-				<li>
-					<a href="https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-497215728101-856f4ea42174?w=400" alt="Creative Office" />
-					</a>
-				</li>
-				<li>
-					<a href="https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?w=400" alt="Meeting Room" />
-					</a>
-				</li>
-				<li>
-					<a href="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400" alt="Tech Hub" />
-					</a>
-				</li>
-				<li>
-					<a href="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400" alt="Lounge Area" />
-					</a>
-				</li>
-				<li>
-					<a href="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=400" alt="Open Office" />
-					</a>
-				</li>
-				<li>
-					<a href="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400" alt="City Office" />
-					</a>
-				</li>
-				<li>
-					<a href="https://images.unsplash.com/photo-1497366672149-e5e4b4d34eb3?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-1497366672149-e5e4b4d34eb3?w=400" alt="Work Station" />
-					</a>
-				</li>
-				<li>
-					<a href="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400" alt="Developer Desk" />
-					</a>
-				</li>
-				<li>
-					<a href="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800" rel="external">
-						<img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400" alt="Team Work" />
-					</a>
-				</li>
-			</ul>
-		</div>
-		<div data-role="footer" data-position="fixed" data-theme="b">
-			<div class="footer-content">
-				<i class="fas fa-code"></i>
-				<h4 style="margin: 5px 0;">Portfolio by 김개발</h4>
-			</div>
-		</div>		
-	</div>
-
-	<!-- PRODUCTS PAGE -->
-	<div data-role="page" id="products" data-theme="b">
-		<div data-role="header" data-theme="b">
-			<a href="#home" data-icon="arrow-l" data-direction="reverse">홈</a>			
-			<h1>주요 제품</h1>
-		</div>
-		<div data-role="content">
-			<div class="content-card">
-				<h3><i class="fas fa-rocket"></i>Google의 혁신적인 제품들</h3>
-				<p>Google은 검색엔진을 시작으로 현재 전 세계 사람들이 매일 사용하는 다양한 제품과 서비스를 제공하고 있습니다. 각 제품은 수십억 명의 사용자에게 영향을 미치고 있습니다.</p>
-			</div>
-
-			<div data-role="collapsible-set" data-theme="b" data-content-theme="e">
-				<div data-role="collapsible" data-collapsed="false">
-					<h3><i class="fas fa-search"></i> Search & Information</h3>
-					<ul class="info-list">
-						<li><strong>Google Search:</strong> 일일 검색 쿼리 85억 건 이상 처리하는 세계 최고의 검색엔진</li>
-						<li><strong>Google Maps:</strong> 220개국 이상 지도 데이터, 실시간 교통 정보 및 내비게이션</li>
-						<li><strong>Google Earth:</strong> 위성 이미지와 3D 지형으로 지구를 탐험</li>
-						<li><strong>Google Lens:</strong> 이미지 인식 AI로 시각적 검색 제공</li>
-						<li><strong>Google Scholar:</strong> 학술 논문 및 연구 자료 검색</li>
-					</ul>
-				</div>
-				<div data-role="collapsible">
-					<h3><i class="fas fa-envelope"></i> Communication & Productivity</h3>
-					<ul class="info-list">
-						<li><strong>Gmail:</strong> 18억 명 이상이 사용하는 이메일 서비스</li>
-						<li><strong>Google Meet:</strong> 고화질 화상회의 플랫폼</li>
-						<li><strong>Google Chat:</strong> 팀 협업 메시징 도구</li>
-						<li><strong>Google Workspace:</strong> Docs, Sheets, Slides, Forms로 구성된 생산성 도구</li>
-						<li><strong>Google Calendar:</strong> 일정 관리 및 스케줄링</li>
-						<li><strong>Google Keep:</strong> 메모 및 할 일 관리</li>
-					</ul>
-				</div>
-				<div data-role="collapsible">
-					<h3><i class="fas fa-mobile-alt"></i> Mobile & OS</h3>
-					<ul class="info-list">
-						<li><strong>Android:</strong> 전 세계 70% 이상의 스마트폰에서 사용되는 모바일 OS</li>
-						<li><strong>Chrome OS:</strong> 클라우드 기반 운영체제</li>
-						<li><strong>Pixel:</strong> Google의 하드웨어 제품 라인 (스마트폰, 이어버드, 워치)</li>
-						<li><strong>Google Play Store:</strong> 350만 개 이상의 앱이 있는 앱 마켓</li>
-						<li><strong>Wear OS:</strong> 스마트워치 운영체제</li>
-					</ul>
-				</div>
-				<div data-role="collapsible">
-					<h3><i class="fas fa-play-circle"></i> Media & Entertainment</h3>
-					<ul class="info-list">
-						<li><strong>YouTube:</strong> 월 25억 명 이상의 사용자를 보유한 동영상 플랫폼</li>
-						<li><strong>YouTube Music:</strong> 음악 스트리밍 서비스</li>
-						<li><strong>Google TV:</strong> 스트리밍 콘텐츠 통합 플랫폼</li>
-						<li><strong>Google Podcasts:</strong> 팟캐스트 플랫폼</li>
-						<li><strong>Google Photos:</strong> 무제한 사진 저장 및 AI 기반 정리</li>
-					</ul>
-				</div>
-				<div data-role="collapsible">
-					<h3><i class="fas fa-cloud"></i> Cloud & Developer</h3>
-					<ul class="info-list">
-						<li><strong>Google Cloud Platform:</strong> 컴퓨팅, 스토리지, AI/ML 등 종합 클라우드 서비스</li>
-						<li><strong>Firebase:</strong> 모바일 및 웹 앱 개발 플랫폼</li>
-						<li><strong>TensorFlow:</strong> 오픈소스 머신러닝 프레임워크</li>
-						<li><strong>Kubernetes:</strong> 컨테이너 오케스트레이션 플랫폼</li>
-						<li><strong>Chrome DevTools:</strong> 웹 개발자 도구</li>
-					</ul>
-				</div>
-				<div data-role="collapsible">
-					<h3><i class="fas fa-brain"></i> AI & Innovation</h3>
-					<ul class="info-list">
-						<li><strong>Gemini:</strong> 차세대 멀티모달 AI 모델</li>
-						<li><strong>Google Assistant:</strong> AI 기반 음성 비서</li>
-						<li><strong>Google Translate:</strong> 130개 이상 언어 실시간 번역</li>
-						<li><strong>Waymo:</strong> 자율주행 기술 (Alphabet 계열사)</li>
-						<li><strong>DeepMind:</strong> AlphaGo, AlphaFold 등 혁신적 AI 연구</li>
-						<li><strong>Google Nest:</strong> 스마트홈 제품군</li>
-					</ul>
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-bars" style="color: var(--kb-yellow);"></i>
+					전체 서비스
 				</div>
 			</div>
 
-			<div class="content-card" style="margin-top: 20px;">
-				<h3><i class="fas fa-trophy"></i>산업을 변화시킨 혁신</h3>
-				<p>Google의 제품들은 단순한 서비스를 넘어 각 산업의 패러다임을 바꾸었습니다:</p>
-				<ul class="info-list">
-					<li><strong>검색:</strong> 정보 접근의 민주화</li>
-					<li><strong>모바일:</strong> 오픈소스 Android로 스마트폰 보급 가속화</li>
-					<li><strong>클라우드:</strong> 기업의 디지털 전환 선도</li>
-					<li><strong>AI:</strong> 머신러닝을 모든 제품에 통합</li>
-					<li><strong>브라우저:</strong> Chrome으로 웹 표준 발전 기여</li>
-				</ul>
+			<div style="background: white; border-radius: 15px; padding: 10px; margin: 15px 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+				<div style="padding: 15px; border-bottom: 1px solid #f0f0f0;">
+					<div style="font-weight: 700; color: var(--kb-brown); margin-bottom: 10px;">
+						<i class="fas fa-university" style="margin-right: 8px;"></i>
+						뱅킹 서비스
+					</div>
+					<div style="padding-left: 25px;">
+						<a href="#transfer" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">이체</a>
+						<a href="#accounts" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">조회</a>
+						<a href="#" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">환전</a>
+						<a href="#" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">공과금</a>
+					</div>
+				</div>
+
+				<div style="padding: 15px; border-bottom: 1px solid #f0f0f0;">
+					<div style="font-weight: 700; color: var(--kb-brown); margin-bottom: 10px;">
+						<i class="fas fa-hand-holding-usd" style="margin-right: 8px;"></i>
+						대출 서비스
+					</div>
+					<div style="padding-left: 25px;">
+						<a href="#loan" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">주택담보대출</a>
+						<a href="#loan" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">신용대출</a>
+						<a href="#loan" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">전세자금대출</a>
+						<a href="#loan" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">청년대출</a>
+					</div>
+				</div>
+
+				<div style="padding: 15px; border-bottom: 1px solid #f0f0f0;">
+					<div style="font-weight: 700; color: var(--kb-brown); margin-bottom: 10px;">
+						<i class="fas fa-credit-card" style="margin-right: 8px;"></i>
+						카드 서비스
+					</div>
+					<div style="padding-left: 25px;">
+						<a href="#card" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">카드 조회</a>
+						<a href="#card" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">카드 신청</a>
+						<a href="#card" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">카드 혜택</a>
+						<a href="#" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">분실 신고</a>
+					</div>
+				</div>
+
+				<div style="padding: 15px; border-bottom: 1px solid #f0f0f0;">
+					<div style="font-weight: 700; color: var(--kb-brown); margin-bottom: 10px;">
+						<i class="fas fa-chart-line" style="margin-right: 8px;"></i>
+						투자 서비스
+					</div>
+					<div style="padding-left: 25px;">
+						<a href="#stock" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">KB증권</a>
+						<a href="#" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">펀드</a>
+						<a href="#" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">ISA</a>
+						<a href="#" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">연금저축</a>
+					</div>
+				</div>
+
+				<div style="padding: 15px; border-bottom: 1px solid #f0f0f0;">
+					<div style="font-weight: 700; color: var(--kb-brown); margin-bottom: 10px;">
+						<i class="fas fa-shield-alt" style="margin-right: 8px;"></i>
+						보험 서비스
+					</div>
+					<div style="padding-left: 25px;">
+						<a href="#insurance" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">보험 조회</a>
+						<a href="#insurance" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">보험 가입</a>
+						<a href="#" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">보험금 청구</a>
+					</div>
+				</div>
+
+				<div style="padding: 15px;">
+					<div style="font-weight: 700; color: var(--kb-brown); margin-bottom: 10px;">
+						<i class="fas fa-cog" style="margin-right: 8px;"></i>
+						설정 및 기타
+					</div>
+					<div style="padding-left: 25px;">
+						<a href="#" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">인증서 관리</a>
+						<a href="#" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">보안설정</a>
+						<a href="#" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">고객센터</a>
+						<a href="#company" style="display: block; padding: 8px 0; color: #333; text-decoration: none;">회사 소개</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="service-card">
+				<div class="service-title">
+					<i class="fas fa-headset" style="color: var(--kb-yellow);"></i>
+					고객센터
+				</div>
+				<div class="service-desc">
+					<strong style="color: var(--kb-brown);">상담전화:</strong> 1588-9999 (24시간 운영)<br>
+					<strong style="color: var(--kb-brown);">영업시간:</strong> 평일 09:00 ~ 16:00<br>
+					<strong style="color: var(--kb-brown);">홈페이지:</strong> www.kbstar.com
+				</div>
 			</div>
 		</div>
-		<div data-role="footer" data-position="fixed" data-theme="b">
-			<div class="footer-content">
-				<i class="fas fa-code"></i>
-				<h4 style="margin: 5px 0;">Portfolio by 김개발</h4>
+
+		<div data-role="footer" data-position="fixed" data-theme="a">
+			<div class="footer-nav">
+				<a href="#home" class="footer-item">
+					<i class="fas fa-home"></i>
+					<span>홈</span>
+				</a>
+				<a href="#accounts" class="footer-item">
+					<i class="fas fa-list"></i>
+					<span>조회</span>
+				</a>
+				<a href="#transfer" class="footer-item">
+					<i class="fas fa-exchange-alt"></i>
+					<span>이체</span>
+				</a>
+				<a href="#company" class="footer-item">
+					<i class="fas fa-building"></i>
+					<span>회사</span>
+				</a>
+				<a href="#more" class="footer-item active">
+					<i class="fas fa-bars"></i>
+					<span>더보기</span>
+				</a>
 			</div>
-		</div>		
+		</div>
 	</div>
 </div>	
+
+<script>
+// 간단한 인터랙션 스크립트
+$(document).ready(function() {
+	// 계좌 잔액 숨김/표시 토글 (실제 구현 시)
+	$('.balance-amount').on('click', function() {
+		// 실제 앱에서는 잔액 표시/숨김 기능
+	});
+	
+	// 빠른 이체 연락처 클릭 이벤트
+	$('.contact-item').on('click', function() {
+		var name = $(this).find('.contact-name').text();
+		if(name !== '추가') {
+			// 실제 앱에서는 해당 연락처로 이체 화면 이동
+		}
+	});
+});
+</script>
 </body>
 </html>
