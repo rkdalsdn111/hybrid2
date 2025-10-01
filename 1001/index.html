@@ -1,0 +1,769 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>Google - Dream Company</title>
+	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<style>
+	* {
+		box-sizing: border-box;
+	}
+	
+	body {
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+	/* Custom Color Theme */
+	.ui-page-theme-b .ui-bar-inherit,
+	.ui-bar-b {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+		border-color: #667eea !important;
+		color: #fff !important;
+		text-shadow: none !important;
+	}
+
+	.ui-page-theme-b .ui-body-inherit {
+		background: #f8f9fa;
+	}
+
+	/* Hero Section */
+	.hero-section {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		padding: 40px 20px;
+		text-align: center;
+		color: white;
+		border-radius: 0 0 30px 30px;
+		margin: -15px -15px 20px -15px;
+	}
+
+	.hero-section h2 {
+		font-size: 2em;
+		margin: 10px 0;
+		font-weight: 700;
+	}
+
+	.hero-section p {
+		font-size: 1.1em;
+		opacity: 0.95;
+		margin: 10px 0;
+	}
+
+	.company-logo {
+		width: 120px;
+		height: 120px;
+		background: white;
+		border-radius: 20px;
+		margin: 0 auto 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 3em;
+		box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+	}
+
+	/* Menu Cards */
+	.menu-cards {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 15px;
+		padding: 20px 10px;
+	}
+
+	.menu-card {
+		background: white;
+		border-radius: 15px;
+		padding: 25px 15px;
+		text-align: center;
+		box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+		transition: all 0.3s ease;
+		text-decoration: none;
+		color: #333;
+		border: 2px solid transparent;
+	}
+
+	.menu-card:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+		border-color: #667eea;
+	}
+
+	.menu-card i {
+		font-size: 2.5em;
+		margin-bottom: 10px;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	.menu-card h3 {
+		font-size: 1.1em;
+		margin: 10px 0 5px;
+		color: #000;
+	}
+
+	.menu-card p {
+		font-size: 0.85em;
+		color: #000;
+		margin: 0;
+	}
+
+	/* Content Sections */
+	.content-card {
+		background: white;
+		border-radius: 15px;
+		padding: 20px;
+		margin-bottom: 15px;
+		box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+	}
+
+	.content-card h3 {
+		color: #667eea;
+		margin-top: 0;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.content-card h3 i {
+		font-size: 1.2em;
+	}
+
+	.content-card p {
+		color: #000;
+	}
+
+	/* Collapsible Styling */
+	.ui-collapsible-heading {
+		margin: 10px 0 !important;
+	}
+
+	.ui-collapsible-heading .ui-btn {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+		color: white !important;
+		border: none !important;
+		border-radius: 12px !important;
+		padding: 15px !important;
+		font-weight: 600 !important;
+		text-shadow: none !important;
+		text-align: left !important;
+	}
+
+	.ui-collapsible-heading .ui-btn .ui-icon {
+		background-color: white !important;
+		right: 10px !important;
+		left: auto !important;
+	}
+
+	.ui-collapsible-heading .ui-btn:after {
+		background-color: white !important;
+		right: 10px !important;
+		left: auto !important;
+	}
+
+	.ui-collapsible-content {
+		background: white !important;
+		border-radius: 12px !important;
+		margin-top: 5px !important;
+		padding: 20px !important;
+		box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+		color: #000 !important;
+	}
+
+	.ui-collapsible-content p,
+	.ui-collapsible-content ul,
+	.ui-collapsible-content li {
+		color: #000 !important;
+	}
+
+	/* Video & Media */
+	.media-container {
+		border-radius: 15px;
+		overflow: hidden;
+		margin: 15px 0;
+		box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+	}
+
+	.media-title {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: white;
+		padding: 15px;
+		font-weight: 600;
+		text-align: center;
+		margin: 20px 0 10px;
+		border-radius: 10px;
+	}
+
+	/* Gallery */
+	.picture {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 10px;
+	}
+
+	.picture li {
+		aspect-ratio: 1;
+		overflow: hidden;
+		border-radius: 12px;
+		box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+	}
+
+	.picture li a {
+		display: block;
+		height: 100%;
+	}
+
+	.picture li img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.3s ease;
+	}
+
+	.picture li img:hover {
+		transform: scale(1.1);
+	}
+
+	/* Stats Section */
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 10px;
+		margin: 20px 0;
+	}
+
+	.stat-item {
+		background: white;
+		padding: 20px 10px;
+		border-radius: 12px;
+		text-align: center;
+		box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+	}
+
+	.stat-item .number {
+		font-size: 1.8em;
+		font-weight: 700;
+		color: #000;
+		text-shadow: 
+			-1px -1px 0 #fff,
+			1px -1px 0 #fff,
+			-1px 1px 0 #fff,
+			1px 1px 0 #fff,
+			-2px 0 0 #fff,
+			2px 0 0 #fff,
+			0 -2px 0 #fff,
+			0 2px 0 #fff;
+	}
+
+	.stat-item .label {
+		font-size: 0.85em;
+		color: #000;
+		margin-top: 5px;
+	}
+
+	/* Audio Player */
+	audio {
+		width: 100%;
+		border-radius: 10px;
+		margin: 10px 0;
+	}
+
+	/* Footer */
+	.ui-footer {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+		border: none !important;
+	}
+
+	.footer-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		color: white;
+	}
+
+	.footer-content i {
+		font-size: 1.2em;
+	}
+
+	/* List styling */
+	.info-list {
+		list-style: none;
+		padding: 0;
+	}
+
+	.info-list li {
+		padding: 12px;
+		margin: 8px 0;
+		background: #f8f9fa;
+		border-left: 4px solid #667eea;
+		border-radius: 5px;
+		color: #000;
+	}
+
+	.info-list li strong {
+		color: #667eea;
+	}
+</style>
+</head>
+
+<body>
+<div data-theme="b">
+	<!-- HOME PAGE -->
+	<div data-role="page" id="home">
+		<div data-role="header" data-theme="b" data-position="fixed">
+			<h1>My Dream Company</h1>
+		</div>
+		<div data-role="content">
+			<div class="hero-section">
+				<div class="company-logo">
+					<i class="fab fa-google" style="color: #4285f4;"></i>
+				</div>
+				<h2>Google</h2>
+				<p>Organizing the world's information</p>
+				<p style="font-size: 0.9em; opacity: 0.9;">지원 직무: Software Engineer</p>
+			</div>
+
+			<div class="stats-grid">
+				<div class="stat-item">
+					<div class="number">150K+</div>
+					<div class="label">직원 수</div>
+				</div>
+				<div class="stat-item">
+					<div class="number">$280B</div>
+					<div class="label">연 매출</div>
+				</div>
+				<div class="stat-item">
+					<div class="number">1998</div>
+					<div class="label">설립연도</div>
+				</div>
+			</div>
+
+			<div class="menu-cards">
+				<a href="#intro" class="menu-card">
+					<i class="fas fa-building"></i>
+					<h3>회사 소개</h3>
+					<p>Google의 비전과 가치</p>
+				</a>
+				<a href="#culture" class="menu-card">
+					<i class="fas fa-users"></i>
+					<h3>기업 문화</h3>
+					<p>일하는 방식과 복지</p>
+				</a>
+				<a href="#video" class="menu-card" data-rel="dialog">
+					<i class="fas fa-video"></i>
+					<h3>회사 영상</h3>
+					<p>Google 소개 동영상</p>
+				</a>
+				<a href="#motivation" class="menu-card" data-rel="dialog">
+					<i class="fas fa-heart"></i>
+					<h3>지원 동기</h3>
+					<p>왜 Google인가</p>
+				</a>
+				<a href="#gallery" class="menu-card">
+					<i class="fas fa-images"></i>
+					<h3>오피스 갤러리</h3>
+					<p>Google 캠퍼스 사진</p>
+				</a>
+				<a href="#products" class="menu-card">
+					<i class="fas fa-rocket"></i>
+					<h3>주요 제품</h3>
+					<p>혁신적인 서비스들</p>
+				</a>
+			</div>
+		</div>
+		<div data-role="footer" data-position="fixed" data-theme="b">
+			<div class="footer-content">
+				<i class="fas fa-code"></i>
+				<h4 style="margin: 5px 0;">Portfolio by 김개발</h4>
+			</div>
+		</div>
+	</div>
+	
+	<!-- INTRO PAGE -->
+	<div data-role="page" id="intro" data-theme="b">
+		<div data-role="header" data-theme="b">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">홈</a>			
+			<h1>회사 소개</h1>
+		</div>
+		<div data-role="content">
+			<div class="content-card">
+				<h3><i class="fas fa-info-circle"></i>Google 소개</h3>
+				<p>Google은 1998년 Larry Page와 Sergey Brin이 스탠퍼드 대학교 박사과정 중 설립한 글로벌 기술 기업입니다. "세상의 모든 정보를 체계화하여 누구나 접근하고 사용할 수 있게 만든다"는 미션 아래 검색엔진을 시작으로 현재는 AI, 클라우드, 모바일 OS, 하드웨어 등 다양한 분야에서 혁신을 이끌고 있습니다.</p>
+			</div>
+
+			<div data-role="collapsible-set" data-theme="b" data-content-theme="e">
+				<div data-role="collapsible" data-collapsed="false">
+					<h3><i class="fas fa-history"></i> 회사 연혁</h3>
+					<ul class="info-list">
+						<li><strong>1998:</strong> Larry Page와 Sergey Brin이 Google 설립</li>
+						<li><strong>2004:</strong> 나스닥 상장, Gmail 출시</li>
+						<li><strong>2005:</strong> Google Maps, Google Earth 출시</li>
+						<li><strong>2006:</strong> YouTube 인수</li>
+						<li><strong>2008:</strong> Android OS 및 Chrome 브라우저 출시</li>
+						<li><strong>2015:</strong> Alphabet Inc. 지주회사 체제로 전환</li>
+						<li><strong>2016:</strong> Google Assistant 및 AI First 전략 발표</li>
+						<li><strong>2023:</strong> Gemini AI 모델 발표, AI 혁신 가속화</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-crosshairs"></i> 핵심 가치</h3>
+					<ul class="info-list">
+						<li><strong>사용자 최우선:</strong> 사용자 경험을 최우선으로 생각하는 제품 철학</li>
+						<li><strong>혁신과 도전:</strong> 20% 프로젝트를 통한 창의적 실험 문화</li>
+						<li><strong>개방성:</strong> 오픈소스 기여와 지식 공유</li>
+						<li><strong>데이터 기반 의사결정:</strong> 측정 가능한 지표로 검증</li>
+						<li><strong>다양성과 포용:</strong> 전 세계 인재들의 다양한 관점 존중</li>
+						<li><strong>Don't be evil:</strong> 윤리적 기술 개발과 사회적 책임</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-globe"></i> 글로벌 임팩트</h3>
+					<p><strong>일일 사용자 수:</strong> Google 검색 일일 사용자 85억 명 이상</p>
+					<p><strong>제품 생태계:</strong> 9개 제품이 각각 10억 명 이상의 사용자 보유 (Search, YouTube, Maps, Gmail, Android, Chrome, Play Store, Google Drive, Google Photos)</p>
+					<p><strong>AI 연구:</strong> DeepMind와 Google Research를 통해 AlphaGo, AlphaFold 등 획기적인 AI 기술 개발</p>
+					<p><strong>클라우드 서비스:</strong> Google Cloud Platform으로 전 세계 기업들의 디지털 전환 지원</p>
+					<p><strong>지속가능성:</strong> 2030년까지 탄소 중립 달성 목표, 재생 에너지 100% 사용</p>
+				</div>
+			</div>
+		</div>
+		<div data-role="footer" data-position="fixed" data-theme="b">
+			<div class="footer-content">
+				<i class="fas fa-code"></i>
+				<h4 style="margin: 5px 0;">Portfolio by 김개발</h4>
+			</div>
+		</div>		
+	</div>
+
+	<!-- CULTURE PAGE -->
+	<div data-role="page" id="culture" data-theme="b">
+		<div data-role="header" data-theme="b">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">홈</a>			
+			<h1>기업 문화</h1>
+		</div>
+		<div data-role="content">
+			<div class="content-card">
+				<h3><i class="fas fa-star"></i>Google의 일하는 방식</h3>
+				<p>Google은 "일하기 좋은 회사" 순위에서 항상 상위권을 차지하며, 혁신적인 기업문화와 복지 제도로 유명합니다. 자율성과 책임감을 바탕으로 한 수평적 조직 문화 속에서 직원들은 최고의 성과를 낼 수 있습니다.</p>
+			</div>
+
+			<div data-role="collapsible-set" data-theme="b" data-content-theme="e">
+				<div data-role="collapsible" data-collapsed="false">
+					<h3><i class="fas fa-lightbulb"></i> 혁신 문화</h3>
+					<ul class="info-list">
+						<li><strong>20% Time:</strong> 업무 시간의 20%를 자신이 원하는 프로젝트에 투자 (Gmail, Google News가 이렇게 탄생)</li>
+						<li><strong>OKR 시스템:</strong> Objectives and Key Results로 목표 관리</li>
+						<li><strong>Fail Fast:</strong> 빠른 실패와 학습을 장려하는 문화</li>
+						<li><strong>Data-Driven:</strong> 모든 의사결정은 데이터와 실험을 기반으로</li>
+						<li><strong>Googleyness:</strong> 호기심, 겸손함, 협업을 중시하는 Google만의 문화</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-gift"></i> 복지 혜택</h3>
+					<ul class="info-list">
+						<li><strong>무료 식사:</strong> 세계적인 셰프들이 준비하는 3식 무료 제공</li>
+						<li><strong>건강 관리:</strong> 사내 피트니스 센터, 의료 서비스, 마사지</li>
+						<li><strong>교육 지원:</strong> 무제한 교육 프로그램 및 컨퍼런스 참가 지원</li>
+						<li><strong>육아 지원:</strong> 최대 18주 유급 육아휴직, 사내 어린이집</li>
+						<li><strong>이동 지원:</strong> 무료 셔틀버스, 전기차 충전소</li>
+						<li><strong>재택근무:</strong> 하이브리드 근무 제도 (주 3일 출근)</li>
+						<li><strong>주식 옵션:</strong> RSU(제한적 주식 단위) 지급</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-building"></i> 근무 환경</h3>
+					<p><strong>Googleplex:</strong> 캘리포니아 마운틴 뷰 본사는 놀이터 같은 오피스로 유명합니다. 수영장, 볼링장, 농구장, 게임룸 등이 있으며, 화려한 색상과 창의적인 공간 디자인이 특징입니다.</p>
+					<p><strong>글로벌 오피스:</strong> 전 세계 70개 이상의 오피스가 있으며, 각 지역의 문화를 반영한 독특한 디자인을 자랑합니다.</p>
+					<p><strong>협업 공간:</strong> 다양한 형태의 미팅룸, 라운지, 카페 공간에서 자유롭게 협업</p>
+					<p><strong>조용한 공간:</strong> 집중 근무를 위한 개인 작업 공간도 충분히 제공</p>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-chart-line"></i> 성장 기회</h3>
+					<ul class="info-list">
+						<li><strong>멘토링:</strong> 시니어 엔지니어와 1:1 멘토링 프로그램</li>
+						<li><strong>내부 이동:</strong> 다양한 팀과 프로젝트로 자유로운 이동 가능</li>
+						<li><strong>글로벌 기회:</strong> 해외 오피스 근무 및 글로벌 프로젝트 참여</li>
+						<li><strong>기술 공유:</strong> 정기적인 Tech Talk, 사내 컨퍼런스</li>
+						<li><strong>오픈소스:</strong> 업무 시간에 오픈소스 프로젝트 기여 가능</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div data-role="footer" data-position="fixed" data-theme="b">
+			<div class="footer-content">
+				<i class="fas fa-code"></i>
+				<h4 style="margin: 5px 0;">Portfolio by 김개발</h4>
+			</div>
+		</div>		
+	</div>
+	
+	<!-- VIDEO PAGE -->
+	<div data-role="page" id="video" data-theme="b">
+		<div data-role="header" data-position="fixed" data-theme="b">
+			<h1>Google 영상</h1>
+		</div>
+		<div data-role="content">
+			<div class="media-title">
+				<i class="fas fa-play-circle"></i> Google 공식 소개 영상
+			</div>
+			<div class="media-container">
+				<iframe width="100%" height="240" src="https://www.youtube.com/embed/LoXGsv9fAAw" frameborder="0" allowfullscreen></iframe>
+			</div>
+
+			<div class="media-title">
+				<i class="fas fa-briefcase"></i> Life at Google - 개발자 인터뷰
+			</div>
+			<div class="media-container">
+				<iframe width="100%" height="240" src="https://www.youtube.com/embed/cozFLQFYOH4" frameborder="0" allowfullscreen></iframe>
+			</div>
+
+			<div class="media-title">
+				<i class="fas fa-brain"></i> Google AI 혁신
+			</div>
+			<div class="media-container">
+				<iframe width="100%" height="240" src="https://www.youtube.com/embed/gnaBPBuL02s" frameborder="0" allowfullscreen></iframe>
+			</div>
+		</div>
+		<div data-role="footer" data-theme="b">
+		</div>
+	</div>
+	
+	<!-- MOTIVATION PAGE -->
+	<div data-role="page" id="motivation">
+		<div data-role="header">
+			<h1><i class="fas fa-heart"></i> 지원 동기</h1>
+		</div>
+		<div data-role="content">
+			<div class="content-card">
+				<h3><i class="fas fa-question-circle"></i> 왜 Google인가?</h3>
+				<p>Google은 단순한 IT 회사가 아닌, 전 세계 수십억 명의 삶에 긍정적인 영향을 미치는 기술을 만드는 곳입니다. 저는 다음과 같은 이유로 Google에서 일하고 싶습니다.</p>
+			</div>
+
+			<div class="content-card">
+				<h3><i class="fas fa-globe"></i> 1. 글로벌 임팩트</h3>
+				<p>제가 작성하는 코드 한 줄이 전 세계 수십억 명의 사용자에게 영향을 줄 수 있다는 것은 엔지니어로서 최고의 보람입니다. Google의 제품들은 사람들의 일상을 더 편리하고 효율적으로 만들며, 정보 접근성을 높여 세상을 더 나은 곳으로 만듭니다.</p>
+			</div>
+
+			<div class="content-card">
+				<h3><i class="fas fa-rocket"></i> 2. 기술 혁신의 선두</h3>
+				<p>AI, 머신러닝, 클라우드 컴퓨팅 등 최첨단 기술 분야에서 Google은 항상 선두주자입니다. TensorFlow, Kubernetes, Android 등 오픈소스 프로젝트를 통해 기술 생태계 전체에 기여하는 모습에 깊은 감명을 받았습니다. 이러한 환경에서 최고의 엔지니어들과 함께 일하며 성장하고 싶습니다.</p>
+			</div>
+
+			<div class="content-card">
+				<h3><i class="fas fa-users"></i> 3. 혁신적인 문화</h3>
+				<p>20% 프로젝트, 데이터 기반 의사결정, 실패를 두려워하지 않는 문화는 제가 추구하는 일하는 방식과 완벽하게 일치합니다. 자율성과 책임감을 바탕으로 창의적인 솔루션을 만들어낼 수 있는 환경이야말로 엔지니어가 최고의 성과를 낼 수 있는 곳이라고 믿습니다.</p>
+			</div>
+
+			<div class="content-card">
+				<h3><i class="fas fa-chart-line"></i> 4. 끝없는 학습 기회</h3>
+				<p>Google의 복잡하고 대규모의 시스템을 다루면서 분산 시스템, 성능 최적화, 확장 가능한 아키텍처 설계 등 실무 경험을 쌓고 싶습니다. 또한 세계 최고의 엔지니어들과 협업하며 그들의 문제 해결 방식과 사고방식을 배우고 싶습니다.</p>
+			</div>
+
+			<div class="content-card">
+				<h3><i class="fas fa-seedling"></i> 5. 지속 가능한 미래</h3>
+				<p>Google의 탄소 중립 목표와 재생 에너지 사용, AI를 활용한 기후 변화 대응 등 사회적 책임을 다하는 모습이 인상 깊었습니다. 기술이 수익만이 아닌 더 나은 세상을 만드는 데 사용될 때 진정한 가치가 있다고 생각하며, 그러한 비전을 가진 회사에서 일하고 싶습니다.</p>
+			</div>
+
+			<div class="content-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+				<h3 style="color: white;"><i class="fas fa-quote-left"></i> My Commitment</h3>
+				<p style="font-size: 1.1em; font-style: italic;">"Google에서 저는 단순히 코드를 작성하는 것을 넘어, 혁신을 만들고, 문제를 해결하며, 전 세계 사람들의 삶을 개선하는 데 기여하고 싶습니다. Google의 'Think Big'한 비전과 함께 성장하며, 기술로 세상을 변화시키는 엔지니어가 되겠습니다."</p>
+			</div>
+		</div>
+		<div data-role="footer">
+			<a href="#home" data-direction="reverse">홈으로</a>
+		</div>
+	</div>
+
+	<!-- GALLERY PAGE -->
+	<div data-role="page" id="gallery" data-theme="b">
+		<div data-role="header" data-position="fixed" data-theme="b">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">홈</a>
+			<h1>오피스 갤러리</h1>
+		</div>
+		<div data-role="content">
+			<div class="content-card">
+				<h3><i class="fas fa-camera"></i>Google의 창의적인 워크스페이스</h3>
+				<p>Google의 오피스는 직원들의 창의성과 협업을 극대화하기 위해 디자인되었습니다. 각 지역의 오피스는 그 지역의 문화를 반영하여 독특한 개성을 가지고 있습니다.</p>
+			</div>
+			
+			<div class="media-title">
+				<i class="fas fa-images"></i> Googleplex & Global Offices
+			</div>
+			
+			<ul class="picture">
+				<li>
+					<a href="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=400" alt="Google Office" />
+					</a>
+				</li>
+				<li>
+					<a href="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400" alt="Modern Workspace" />
+					</a>
+				</li>
+				<li>
+					<a href="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400" alt="Collaboration Space" />
+					</a>
+				</li>
+				<li>
+					<a href="https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-497215728101-856f4ea42174?w=400" alt="Creative Office" />
+					</a>
+				</li>
+				<li>
+					<a href="https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?w=400" alt="Meeting Room" />
+					</a>
+				</li>
+				<li>
+					<a href="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400" alt="Tech Hub" />
+					</a>
+				</li>
+				<li>
+					<a href="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400" alt="Lounge Area" />
+					</a>
+				</li>
+				<li>
+					<a href="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=400" alt="Open Office" />
+					</a>
+				</li>
+				<li>
+					<a href="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400" alt="City Office" />
+					</a>
+				</li>
+				<li>
+					<a href="https://images.unsplash.com/photo-1497366672149-e5e4b4d34eb3?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-1497366672149-e5e4b4d34eb3?w=400" alt="Work Station" />
+					</a>
+				</li>
+				<li>
+					<a href="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400" alt="Developer Desk" />
+					</a>
+				</li>
+				<li>
+					<a href="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800" rel="external">
+						<img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400" alt="Team Work" />
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div data-role="footer" data-position="fixed" data-theme="b">
+			<div class="footer-content">
+				<i class="fas fa-code"></i>
+				<h4 style="margin: 5px 0;">Portfolio by 김개발</h4>
+			</div>
+		</div>		
+	</div>
+
+	<!-- PRODUCTS PAGE -->
+	<div data-role="page" id="products" data-theme="b">
+		<div data-role="header" data-theme="b">
+			<a href="#home" data-icon="arrow-l" data-direction="reverse">홈</a>			
+			<h1>주요 제품</h1>
+		</div>
+		<div data-role="content">
+			<div class="content-card">
+				<h3><i class="fas fa-rocket"></i>Google의 혁신적인 제품들</h3>
+				<p>Google은 검색엔진을 시작으로 현재 전 세계 사람들이 매일 사용하는 다양한 제품과 서비스를 제공하고 있습니다. 각 제품은 수십억 명의 사용자에게 영향을 미치고 있습니다.</p>
+			</div>
+
+			<div data-role="collapsible-set" data-theme="b" data-content-theme="e">
+				<div data-role="collapsible" data-collapsed="false">
+					<h3><i class="fas fa-search"></i> Search & Information</h3>
+					<ul class="info-list">
+						<li><strong>Google Search:</strong> 일일 검색 쿼리 85억 건 이상 처리하는 세계 최고의 검색엔진</li>
+						<li><strong>Google Maps:</strong> 220개국 이상 지도 데이터, 실시간 교통 정보 및 내비게이션</li>
+						<li><strong>Google Earth:</strong> 위성 이미지와 3D 지형으로 지구를 탐험</li>
+						<li><strong>Google Lens:</strong> 이미지 인식 AI로 시각적 검색 제공</li>
+						<li><strong>Google Scholar:</strong> 학술 논문 및 연구 자료 검색</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-envelope"></i> Communication & Productivity</h3>
+					<ul class="info-list">
+						<li><strong>Gmail:</strong> 18억 명 이상이 사용하는 이메일 서비스</li>
+						<li><strong>Google Meet:</strong> 고화질 화상회의 플랫폼</li>
+						<li><strong>Google Chat:</strong> 팀 협업 메시징 도구</li>
+						<li><strong>Google Workspace:</strong> Docs, Sheets, Slides, Forms로 구성된 생산성 도구</li>
+						<li><strong>Google Calendar:</strong> 일정 관리 및 스케줄링</li>
+						<li><strong>Google Keep:</strong> 메모 및 할 일 관리</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-mobile-alt"></i> Mobile & OS</h3>
+					<ul class="info-list">
+						<li><strong>Android:</strong> 전 세계 70% 이상의 스마트폰에서 사용되는 모바일 OS</li>
+						<li><strong>Chrome OS:</strong> 클라우드 기반 운영체제</li>
+						<li><strong>Pixel:</strong> Google의 하드웨어 제품 라인 (스마트폰, 이어버드, 워치)</li>
+						<li><strong>Google Play Store:</strong> 350만 개 이상의 앱이 있는 앱 마켓</li>
+						<li><strong>Wear OS:</strong> 스마트워치 운영체제</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-play-circle"></i> Media & Entertainment</h3>
+					<ul class="info-list">
+						<li><strong>YouTube:</strong> 월 25억 명 이상의 사용자를 보유한 동영상 플랫폼</li>
+						<li><strong>YouTube Music:</strong> 음악 스트리밍 서비스</li>
+						<li><strong>Google TV:</strong> 스트리밍 콘텐츠 통합 플랫폼</li>
+						<li><strong>Google Podcasts:</strong> 팟캐스트 플랫폼</li>
+						<li><strong>Google Photos:</strong> 무제한 사진 저장 및 AI 기반 정리</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-cloud"></i> Cloud & Developer</h3>
+					<ul class="info-list">
+						<li><strong>Google Cloud Platform:</strong> 컴퓨팅, 스토리지, AI/ML 등 종합 클라우드 서비스</li>
+						<li><strong>Firebase:</strong> 모바일 및 웹 앱 개발 플랫폼</li>
+						<li><strong>TensorFlow:</strong> 오픈소스 머신러닝 프레임워크</li>
+						<li><strong>Kubernetes:</strong> 컨테이너 오케스트레이션 플랫폼</li>
+						<li><strong>Chrome DevTools:</strong> 웹 개발자 도구</li>
+					</ul>
+				</div>
+				<div data-role="collapsible">
+					<h3><i class="fas fa-brain"></i> AI & Innovation</h3>
+					<ul class="info-list">
+						<li><strong>Gemini:</strong> 차세대 멀티모달 AI 모델</li>
+						<li><strong>Google Assistant:</strong> AI 기반 음성 비서</li>
+						<li><strong>Google Translate:</strong> 130개 이상 언어 실시간 번역</li>
+						<li><strong>Waymo:</strong> 자율주행 기술 (Alphabet 계열사)</li>
+						<li><strong>DeepMind:</strong> AlphaGo, AlphaFold 등 혁신적 AI 연구</li>
+						<li><strong>Google Nest:</strong> 스마트홈 제품군</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="content-card" style="margin-top: 20px;">
+				<h3><i class="fas fa-trophy"></i>산업을 변화시킨 혁신</h3>
+				<p>Google의 제품들은 단순한 서비스를 넘어 각 산업의 패러다임을 바꾸었습니다:</p>
+				<ul class="info-list">
+					<li><strong>검색:</strong> 정보 접근의 민주화</li>
+					<li><strong>모바일:</strong> 오픈소스 Android로 스마트폰 보급 가속화</li>
+					<li><strong>클라우드:</strong> 기업의 디지털 전환 선도</li>
+					<li><strong>AI:</strong> 머신러닝을 모든 제품에 통합</li>
+					<li><strong>브라우저:</strong> Chrome으로 웹 표준 발전 기여</li>
+				</ul>
+			</div>
+		</div>
+		<div data-role="footer" data-position="fixed" data-theme="b">
+			<div class="footer-content">
+				<i class="fas fa-code"></i>
+				<h4 style="margin: 5px 0;">Portfolio by 김개발</h4>
+			</div>
+		</div>		
+	</div>
+</div>	
+</body>
+</html>
