@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="콘서트 알림 - 놓치지 말아야 할 콘서트 일정">
+    <meta name="theme-color" content="#6366f1">
+    <title>콘서트 알림 📢</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 class="logo">🎵 콘서트 알림</h1>
+                    <p class="subtitle">놓치지 말아야 할 콘서트 일정</p>
+                </div>
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        class="search-input" 
+                        placeholder="🔍 가수, 공연, 장소 검색..."
+                    >
+                    <button id="search-clear" class="search-clear hidden">✕</button>
+                </div>
+            </div>
+        </div>
+    </header>
 
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 콘서트 목록 -->
+            <div id="concert-list" class="concert-list">
+                <!-- 동적으로 생성됨 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 상세정보 모달 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <div id="modal-body">
+                <!-- 동적으로 생성됨 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 알림 설정 모달 -->
+    <div id="alert-modal" class="modal">
+        <div class="modal-content alert-modal-content">
+            <button class="modal-close" id="alert-modal-close">&times;</button>
+            <div id="alert-modal-body">
+                <!-- 동적으로 생성됨 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PWA 설치 안내 -->
+    <div id="install-prompt" class="install-prompt hidden">
+        <div class="install-content">
+            <p>📱 홈 화면에 추가하고 빠르게 접속하세요!</p>
+            <div class="install-buttons">
+                <button id="install-button" class="btn-install">설치하기</button>
+                <button id="install-dismiss" class="btn-dismiss">나중에</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 GenCoder Team | Concert Alert PWA</p>
+            <p class="footer-sub">놓치지 말아야 할 콘서트 일정을 한눈에</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
