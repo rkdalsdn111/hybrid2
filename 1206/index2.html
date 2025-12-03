@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나도 주식왕 - 가상 투자 리그</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        up: '#22c55e',   /* 수익: 초록 (이미지 기반) */
+                        down: '#ef4444', /* 손실: 빨강 (이미지 기반) */
+                        darkBg: '#111827',
+                        cardDark: '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 부드러운 전환 효과 */
+        body { transition: background-color 0.3s, color 0.3s; }
+        .card { transition: transform 0.2s; }
+        .card:active { transform: scale(0.98); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-darkBg dark:text-gray-100 min-h-screen pb-20">
+
+    <header class="p-4 flex justify-between items-center max-w-lg mx-auto">
+        <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">전국민 가상 투자 리그</p>
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                나도 주식왕 <span class="text-yellow-500"><i class="fas fa-trophy"></i></span>
+            </h1>
+        </div>
+        <button id="themeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-yellow-400">
+            <i class="fas fa-moon"></i>
+        </button>
+    </header>
+
+    <main class="max-w-lg mx-auto px-4 space-y-4">
+
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-white dark:bg-cardDark p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-sm text-gray-500 dark:text-gray-400">총 자산</span>
+                    <i class="fas fa-wallet text-blue-500"></i>
+                </div>
+                <h2 class="text-lg font-bold" id="totalAsset">₩10,000,000</h2>
+                <p class="text-xs text-gray-400">초기 자본: ₩1,000,000</p>
+            </div>
+
+            <div class="bg-white dark:bg-cardDark p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-sm text-gray-500 dark:text-gray-400">수익률</span>
+                    <i class="fas fa-chart-line text-green-500"></i>
+                </div>
+                <h2 class="text-lg font-bold text-gray-800 dark:text-white" id="returnRateDisplay">+0.00%</h2>
+                <p class="text-xs" id="returnAmountDisplay">₩0</p>
+            </div>
+
+            <div class="bg-white dark:bg-cardDark p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-sm text-gray-500 dark:text-gray-400">보유 현금</span>
+                    <i class="fas fa-money-bill-wave text-purple-500"></i>
+                </div>
+                <h2 class="text-lg font-bold" id="cashDisplay">₩10,000,000</h2>
+                <p class="text-xs text-gray-400" id="investedAmountDisplay">포트폴리오: ₩0</p>
+            </div>
+
+            <div class="bg-white dark:bg-cardDark p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-sm text-gray-500 dark:text-gray-400">투자 등급</span>
+                    <i class="fas fa-crown text-yellow-500"></i>
+                </div>
+                <span id="userRankBadge" class="inline-block px-2 py-1 text-xs font-bold rounded bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-white mb-2">
+                    주린이
+                </span>
+                <button onclick="resetGame()" class="w-full text-xs border border-gray-300 dark:border-gray-600 rounded py-1 hover:bg-gray-100 dark:hover:bg-gray-600 transition">
+                    <i class="fas fa-rotate-right mr-1"></i> 초기화
+                </button>
+            </div>
+        </div>
+
+        <div class="flex bg-gray-200 dark:bg-gray-700 rounded-xl p-1 text-sm font-medium">
+            <button onclick="switchTab('market')" id="tab-market" class="flex-1 py-2 rounded-lg bg-white dark:bg-cardDark shadow text-gray-800 dark:text-white transition-all">
+                <i class="fas fa-chart-simple mr-1"></i> 주식 시장
+            </button>
+            <button onclick="switchTab('portfolio')" id="tab-portfolio" class="flex-1 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all">
+                <i class="fas fa-folder-open mr-1"></i> 포트폴리오
+            </button>
+        </div>
+
+        <div id="market-view" class="space-y-3">
+            </div>
+
+        <div id="portfolio-view" class="space-y-3 hidden">
+            <div id="empty-portfolio" class="text-center py-10 text-gray-400 hidden">
+                <i class="fas fa-box-open text-4xl mb-2"></i>
+                <p>보유 중인 주식이 없습니다.</p>
+            </div>
+            </div>
+
+    </main>
+
+    <div id="tradeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-end sm:items-center justify-center">
+        <div class="bg-white dark:bg-cardDark w-full max-w-lg rounded-t-2xl sm:rounded-2xl p-6 shadow-2xl transform transition-transform duration-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold" id="modalTitle">삼성전자 매수</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-gray-500">현재가</span>
+                <span class="text-xl font-bold" id="modalPrice">₩50,000</span>
+            </div>
+
+            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 mb-4 flex justify-between items-center">
+                <button onclick="adjustQty(-1)" class="w-8 h-8 rounded bg-white dark:bg-gray-600 shadow text-lg font-bold">-</button>
+                <input type="number" id="tradeQty" value="1" class="bg-transparent text-center text-xl font-bold w-20 focus:outline-none" min="1">
+                <button onclick="adjustQty(1)" class="w-8 h-8 rounded bg-white dark:bg-gray-600 shadow text-lg font-bold">+</button>
+            </div>
+
+            <div class="flex justify-between text-sm text-gray-500 mb-6">
+                <span>총 주문 금액</span>
+                <span class="font-bold text-gray-800 dark:text-white" id="modalTotal">₩50,000</span>
+            </div>
+
+            <button id="confirmTradeBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition">
+                매수하기
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. 초기 데이터 및 상태 관리 ---
+        const INITIAL_CAPITAL = 10000000;
+        let cash = INITIAL_CAPITAL;
+        let portfolio = {}; // { 'SAMSUNG': { qty: 10, avgPrice: 50000 } }
+        
+        // 가상 주식 데이터
+        let stocks = [
+            { id: 'SAMSUNG', name: '삼성전자', code: 'SMSNG', price: 68000, history: [] },
+            { id: 'SKHYX', name: 'SK하이닉스', code: 'SKHYX', price: 125000, history: [] },
+            { id: 'TESLA', name: '테슬라(가상)', code: 'TSLA', price: 350000, history: [] },
+            { id: 'BITCOIN', name: '비트코인(가상)', code: 'BTC', price: 45000000, history: [] },
+            { id: 'DOGE', name: '도지코인', code: 'DOGE', price: 150, history: [] }
+        ];
+
+        let activeTab = 'market';
+        let selectedStockId = null;
+        let tradeType = 'buy'; // 'buy' or 'sell'
+
+        // --- 2. 엑셀/비즈니스 로직 함수 ---
+
+        // 숫자 포맷팅 (콤마)
+        function formatKRW(num) {
+            return '₩' + Math.floor(num).toLocaleString();
+        }
+
+        // 수익률 계산
+        function calcReturnRate(currentVal, purchaseVal) {
+            if (purchaseVal === 0) return 0;
+            return ((currentVal - purchaseVal) / purchaseVal) * 100;
+        }
+
+        // 전체 자산 재계산
+        function updateDashboard() {
+            let portfolioValue = 0;
+            
+            // 포트폴리오 가치 계산
+            for (const [id, holding] of Object.entries(portfolio)) {
+                const stock = stocks.find(s => s.id === id);
+                if (stock) {
+                    portfolioValue += holding.qty * stock.price;
+                }
+            }
+
+            const totalAsset = cash + portfolioValue;
+            const totalProfit = totalAsset - INITIAL_CAPITAL;
+            const totalReturnRate = (totalProfit / INITIAL_CAPITAL) * 100;
+
+            // DOM 업데이트
+            document.getElementById('totalAsset').innerText = formatKRW(totalAsset);
+            document.getElementById('cashDisplay').innerText = formatKRW(cash);
+            document.getElementById('investedAmountDisplay').innerText = `포트폴리오: ${formatKRW(portfolioValue)}`;
+            
+            const returnRateEl = document.getElementById('returnRateDisplay');
+            const returnAmountEl = document.getElementById('returnAmountDisplay');
+            
+            returnRateEl.innerText = `${totalReturnRate >= 0 ? '+' : ''}${totalReturnRate.toFixed(2)}%`;
+            returnAmountEl.innerText = `${totalProfit >= 0 ? '+' : ''}${formatKRW(totalProfit)}`;
+            
+            // 색상 변경 (이미지 참고: 수익 Green, 손실 Red)
+            if (totalProfit >= 0) {
+                returnRateEl.className = "text-lg font-bold text-up";
+                returnAmountEl.className = "text-xs text-up";
+            } else {
+                returnRateEl.className = "text-lg font-bold text-down";
+                returnAmountEl.className = "text-xs text-down";
+            }
+
+            updateRank(totalReturnRate);
+        }
+
+        // 등급 산정 (게이미피케이션)
+        function updateRank(rate) {
+            const badge = document.getElementById('userRankBadge');
+            let rank = "주린이";
+            let colorClass = "bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-white";
+
+            if (rate > 50) { rank = "워렌 버핏"; colorClass = "bg-yellow-100 text-yellow-800 border border-yellow-500"; }
+            else if (rate > 20) { rank = "고수"; colorClass = "bg-purple-100 text-purple-800 border border-purple-500"; }
+            else if (rate > 5) { rank = "중수"; colorClass = "bg-blue-100 text-blue-800"; }
+            else if (rate < -20) { rank = "한강뷰"; colorClass = "bg-red-100 text-red-800"; }
+            
+            badge.innerText = rank;
+            badge.className = `inline-block px-2 py-1 text-xs font-bold rounded ${colorClass} mb-2`;
+        }
+
+        // --- 3. UI 렌더링 함수 ---
+
+        function renderMarket() {
+            const container = document.getElementById('market-view');
+            container.innerHTML = '';
+
+            stocks.forEach(stock => {
+                // 전일 대비 변동률 시뮬레이션 (랜덤)
+                const changeRate = (Math.random() * 4 - 2).toFixed(2); // -2% ~ +2% 랜덤 표시용
+                const isUp = changeRate >= 0;
+                
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-cardDark p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold">${stock.name}</h3>
+                            <span class="text-xs bg-gray-100 dark:bg-gray-600 px-1 rounded text-gray-500 dark:text-gray-300">${stock.code}</span>
+                        </div>
+                        <div class="mt-1">
+                            <span class="font-bold text-lg">${formatKRW(stock.price)}</span>
+                            <span class="text-xs ${isUp ? 'text-up' : 'text-down'} ml-1">
+                                ${isUp ? '▲' : '▼'} ${Math.abs(changeRate)}%
+                            </span>
+                        </div>
+                    </div>
+                    <button onclick="openTradeModal('${stock.id}', 'buy')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow transition">
+                        매수
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderPortfolio() {
+            const container = document.getElementById('portfolio-view');
+            const emptyState = document.getElementById('empty-portfolio');
+            
+            // 기존 리스트 삭제 (emptyState 제외)
+            Array.from(container.children).forEach(child => {
+                if (child.id !== 'empty-portfolio') container.removeChild(child);
+            });
+
+            const holdingKeys = Object.keys(portfolio);
+            if (holdingKeys.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            holdingKeys.forEach(id => {
+                const holding = portfolio[id];
+                const stock = stocks.find(s => s.id === id);
+                if (!stock) return;
+
+                const currentVal = stock.price * holding.qty;
+                const buyVal = holding.avgPrice * holding.qty;
+                const profit = currentVal - buyVal;
+                const rate = calcReturnRate(currentVal, buyVal);
+                const isUp = rate >= 0;
+
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-cardDark p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-bold text-lg">${stock.name}</h3>
+                            <span class="text-xs text-gray-400">${holding.qty}주 보유</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="block font-bold ${isUp ? 'text-up' : 'text-down'}">
+                                ${isUp ? '+' : ''}${rate.toFixed(2)}%
+                            </span>
+                            <span class="text-xs ${isUp ? 'text-up' : 'text-down'}">
+                                (${isUp ? '+' : ''}${formatKRW(profit)})
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-3 bg-gray-50 dark:bg-gray-800 p-2 rounded">
+                        <div>
+                            <span class="block text-xs">평균단가</span>
+                            <span class="font-medium text-gray-700 dark:text-gray-200">${formatKRW(holding.avgPrice)}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-xs">평가금액</span>
+                            <span class="font-medium text-gray-700 dark:text-gray-200">${formatKRW(currentVal)}</span>
+                        </div>
+                    </div>
+                    <button onclick="openTradeModal('${stock.id}', 'sell')" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg text-sm font-bold shadow transition">
+                        매도하기
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- 4. 인터랙션 및 시뮬레이션 ---
+
+        function switchTab(tabName) {
+            activeTab = tabName;
+            document.getElementById('tab-market').className = tabName === 'market' 
+                ? "flex-1 py-2 rounded-lg bg-white dark:bg-cardDark shadow text-gray-800 dark:text-white transition-all font-bold"
+                : "flex-1 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all";
+            
+            document.getElementById('tab-portfolio').className = tabName === 'portfolio'
+                ? "flex-1 py-2 rounded-lg bg-white dark:bg-cardDark shadow text-gray-800 dark:text-white transition-all font-bold"
+                : "flex-1 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all";
+
+            document.getElementById('market-view').className = tabName === 'market' ? "space-y-3" : "hidden";
+            document.getElementById('portfolio-view').className = tabName === 'portfolio' ? "space-y-3" : "hidden";
+            
+            if(tabName === 'market') renderMarket();
+            else renderPortfolio();
+        }
+
+        // 가격 변동 시뮬레이터 (게이미피케이션 핵심: 실시간성)
+        setInterval(() => {
+            stocks.forEach(stock => {
+                // -1% ~ +1% 사이의 랜덤 변동
+                const fluctuation = 1 + (Math.random() * 0.02 - 0.01);
+                stock.price = Math.floor(stock.price * fluctuation);
+            });
+            
+            // 현재 보고 있는 화면 갱신
+            if (activeTab === 'market') renderMarket();
+            else renderPortfolio();
+            updateDashboard();
+
+            // 모달이 열려있다면 모달 가격도 갱신
+            if(!document.getElementById('tradeModal').classList.contains('hidden') && selectedStockId) {
+                const stock = stocks.find(s => s.id === selectedStockId);
+                document.getElementById('modalPrice').innerText = formatKRW(stock.price);
+                updateModalTotal();
+            }
+        }, 3000); // 3초마다 가격 변동
+
+        // 모달 관련
+        function openTradeModal(stockId, type) {
+            selectedStockId = stockId;
+            tradeType = type;
+            const stock = stocks.find(s => s.id === stockId);
+            
+            document.getElementById('modalTitle').innerText = `${stock.name} ${type === 'buy' ? '매수' : '매도'}`;
+            document.getElementById('modalPrice').innerText = formatKRW(stock.price);
+            document.getElementById('tradeQty').value = 1;
+            
+            const btn = document.getElementById('confirmTradeBtn');
+            btn.innerText = type === 'buy' ? '매수하기' : '매도하기';
+            btn.className = type === 'buy' 
+                ? "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition"
+                : "w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition";
+
+            updateModalTotal();
+            document.getElementById('tradeModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('tradeModal').classList.add('hidden');
+            selectedStockId = null;
+        }
+
+        function adjustQty(delta) {
+            const input = document.getElementById('tradeQty');
+            let val = parseInt(input.value) + delta;
+            if (val < 1) val = 1;
+            input.value = val;
+            updateModalTotal();
+        }
+
+        function updateModalTotal() {
+            const stock = stocks.find(s => s.id === selectedStockId);
+            const qty = parseInt(document.getElementById('tradeQty').value);
+            document.getElementById('modalTotal').innerText = formatKRW(stock.price * qty);
+        }
+
+        // 거래 실행 (엑셀 논리 핵심)
+        document.getElementById('confirmTradeBtn').addEventListener('click', () => {
+            const stock = stocks.find(s => s.id === selectedStockId);
+            const qty = parseInt(document.getElementById('tradeQty').value);
+            const totalAmount = stock.price * qty;
+
+            if (tradeType === 'buy') {
+                if (cash >= totalAmount) {
+                    // 매수 로직: 평단가 계산 (물타기)
+                    if (!portfolio[selectedStockId]) {
+                        portfolio[selectedStockId] = { qty: 0, avgPrice: 0 };
+                    }
+                    const currentHolding = portfolio[selectedStockId];
+                    // (기존총액 + 신규총액) / 전체수량
+                    const newAvg = ((currentHolding.qty * currentHolding.avgPrice) + totalAmount) / (currentHolding.qty + qty);
+                    
+                    portfolio[selectedStockId].qty += qty;
+                    portfolio[selectedStockId].avgPrice = newAvg;
+                    cash -= totalAmount;
+                    
+                    alert(`${stock.name} ${qty}주 매수 완료!`);
+                    closeModal();
+                } else {
+                    alert('현금이 부족합니다!');
+                }
+            } else {
+                // 매도 로직
+                if (portfolio[selectedStockId] && portfolio[selectedStockId].qty >= qty) {
+                    cash += totalAmount;
+                    portfolio[selectedStockId].qty -= qty;
+                    
+                    if (portfolio[selectedStockId].qty === 0) {
+                        delete portfolio[selectedStockId];
+                    }
+                    alert(`${stock.name} ${qty}주 매도 완료! (수익실현)`);
+                    closeModal();
+                } else {
+                    alert('보유 수량이 부족합니다!');
+                }
+            }
+            updateDashboard();
+            if(activeTab === 'portfolio') renderPortfolio();
+        });
+
+        function resetGame() {
+            if(confirm('초기화 하시겠습니까? 모든 자산이 초기 상태로 돌아갑니다.')) {
+                cash = INITIAL_CAPITAL;
+                portfolio = {};
+                updateDashboard();
+                renderMarket(); // 탭 리셋 등을 원하면 추가
+                alert('초기화 되었습니다. 다시 시작해보세요!');
+            }
+        }
+
+        // 다크모드 토글
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // 시스템 설정 확인 (이미지가 다크모드/라이트모드 둘 다 있어서)
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            html.classList.add('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            const icon = themeToggle.querySelector('i');
+            if (html.classList.contains('dark')) {
+                icon.className = 'fas fa-sun';
+            } else {
+                icon.className = 'fas fa-moon';
+            }
+        });
+
+        // 초기 실행
+        updateDashboard();
+        renderMarket();
+
+    </script>
+</body>
+</html>
