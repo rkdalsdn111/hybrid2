@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나도 주식왕 - 리얼 밸런스 에디션</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6', up: '#ef4444', down: '#3b82f6', 
+                        darkBg: '#111827', cardDark: '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { transition: background-color 0.3s, color 0.3s; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #4b5563; }
+        
+        @keyframes flash-update { 0% { background-color: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.5); } 100% { background-color: transparent; border-color: inherit; } }
+        .updated-light { animation: flash-update 0.8s ease-out; }
+        .dark .updated-dark { animation: flash-update 0.8s ease-out; }
+        
+        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        .marquee-container { overflow: hidden; white-space: nowrap; position: relative; }
+        .marquee-content { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; }
+
+        /* 레이아웃 */
+        #app-container { 
+            max-width: 1100px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column;
+            border-left: 1px solid #eee; border-right: 1px solid #eee; position: relative;
+        }
+        .dark #app-container { border-color: #333; }
+        #main-content { display: flex; flex: 1; overflow: hidden; position: relative; }
+        #left-panel { width: 100%; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 10; background: inherit; display: flex; flex-direction: column;}
+        #right-panel { width: 0; opacity: 0; transform: translateX(20px); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); overflow: hidden; display: flex; flex-direction: column; background: inherit; }
+        
+        .split-active #left-panel { width: 35%; min-width: 320px; border-right: 1px solid #e5e7eb; }
+        .dark .split-active #left-panel { border-right-color: #374151; }
+        .split-active #right-panel { width: 65%; opacity: 1; transform: translateX(0); }
+
+        @media (max-width: 768px) {
+            .split-active #left-panel { width: 0; min-width: 0; padding: 0; opacity: 0; }
+            .split-active #right-panel { width: 100%; }
+        }
+
+        /* 팝업 애니메이션 */
+        @keyframes popup-bounce {
+            0% { transform: translate(-50%, -100%) scale(0.8); opacity: 0; }
+            50% { transform: translate(-50%, 10%) scale(1.05); opacity: 1; }
+            70% { transform: translate(-50%, -5%) scale(0.95); }
+            100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+        }
+        .popup-active { display: flex !important; animation: popup-bounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans select-none overflow-hidden">
+
+    <div id="app-container" class="bg-white dark:bg-darkBg shadow-2xl transition-colors duration-300">
+        
+        <div id="eventPopup" class="absolute top-20 left-1/2 transform -translate-x-1/2 z-50 hidden flex-col items-center justify-center pointer-events-none w-[90%] max-w-md">
+            <div id="eventPopupContent" class="bg-white dark:bg-gray-800 border-2 shadow-2xl rounded-2xl p-4 flex items-center gap-4 w-full">
+                <div id="eventPopupIcon" class="text-4xl">🚨</div>
+                <div>
+                    <h3 id="eventPopupTitle" class="font-black text-lg uppercase tracking-wider">MARKET ALERT</h3>
+                    <p id="eventPopupText" class="text-sm font-bold opacity-90 leading-tight">이벤트 내용</p>
+                </div>
+            </div>
+        </div>
+
+        <header class="h-14 flex justify-between items-center px-4 border-b border-gray-100 dark:border-gray-800 shrink-0">
+            <div class="flex items-center gap-3">
+                <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 cursor-pointer" onclick="closeDetailView()">
+                    주식왕
+                </h1>
+                <span id="liveIndicator" class="text-[10px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded font-bold">SIMUL</span>
+                <div class="flex gap-2 ml-2 pl-2 border-l border-gray-200 dark:border-gray-700">
+                    <button onclick="exportData()" title="저장" class="text-gray-400 hover:text-blue-500 transition"><i class="fas fa-save"></i></button>
+                    <button onclick="triggerImport()" title="불러오기" class="text-gray-400 hover:text-green-500 transition"><i class="fas fa-folder-open"></i></button>
+                    <input type="file" id="fileInput" class="hidden" accept=".json" onchange="importData(this)">
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="toggleSpicyMode()" id="spicyBtn" class="px-2 py-1 text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 rounded-lg font-bold transition">🌱 순한맛</button>
+                <button onclick="openApiSettings()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 transition flex items-center justify-center"><i class="fas fa-cog"></i></button>
+                <button id="themeToggle" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 transition flex items-center justify-center"><i class="fas fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div id="newsBar" class="h-8 bg-gray-800 dark:bg-gray-950 flex items-center px-3 gap-3 overflow-hidden transition-colors duration-500 shrink-0">
+            <span class="bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shrink-0">NEWS</span>
+            <div class="marquee-container w-full text-white text-xs">
+                <div id="newsContent" class="marquee-content opacity-90">환영합니다! 종목을 클릭하여 거래를 시작하세요.</div>
+            </div>
+        </div>
+
+        <div id="main-content">
+            <section id="left-panel" class="bg-gray-50 dark:bg-darkBg">
+                <div class="p-4 shrink-0">
+                    <div class="bg-white dark:bg-cardDark p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition hover:shadow-md">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <span class="text-xs text-gray-400 block mb-1">총 자산 <i class="fas fa-pen ml-1 cursor-pointer hover:text-blue-500" onclick="editInitialCapital()"></i></span>
+                                <h2 class="text-2xl font-bold tracking-tight" id="totalAsset">₩10,000,000</h2>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-gray-400 block mb-1">수익률</span>
+                                <div id="returnRateDisplay" class="text-xl font-bold text-gray-800 dark:text-white">+0.00%</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-xs pt-3 border-t border-gray-100 dark:border-gray-700">
+                            <span class="text-gray-500">가용 현금: <span id="cashDisplay" class="font-bold text-gray-700 dark:text-gray-300">₩0</span></span>
+                            <span id="userRankBadge" class="font-bold text-blue-500">주린이</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-4 pb-2 shrink-0 space-y-2">
+                    <div class="flex bg-gray-200 dark:bg-gray-800 rounded-xl p-1 text-xs font-bold">
+                        <button onclick="switchTab('market')" id="tab-market" class="flex-1 py-2 rounded-lg bg-white dark:bg-cardDark shadow transition-all">시장</button>
+                        <button onclick="switchTab('portfolio')" id="tab-portfolio" class="flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-700 transition-all">내 주식</button>
+                        <button onclick="switchTab('history')" id="tab-history" class="flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-700 transition-all">기록</button>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="toggleFavFilter()" id="favFilterBtn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-cardDark border border-gray-200 dark:border-gray-700 text-gray-400 hover:text-yellow-400 transition shadow-sm" title="즐겨찾기만 보기"><i class="fas fa-star"></i></button>
+                        <div class="relative flex-1">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400 text-sm"></i>
+                            <input type="text" id="searchInput" placeholder="종목명/코드 검색" class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white dark:bg-cardDark border-none text-sm shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all" onkeyup="filterStocks()">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-area" class="flex-1 overflow-y-auto custom-scroll px-4 pb-4 space-y-2">
+                    <div id="market-view"></div>
+                    <div id="portfolio-view" class="hidden"></div>
+                    <div id="history-view" class="hidden"></div>
+                </div>
+            </section>
+
+            <section id="right-panel" class="bg-white dark:bg-gray-900 h-full relative border-l border-gray-100 dark:border-gray-800">
+                <div class="h-16 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-6 shrink-0 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
+                    <div class="flex items-center gap-3">
+                        <button onclick="closeDetailView()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition md:hidden"><i class="fas fa-arrow-left"></i></button>
+                        <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-lg font-bold shadow-sm" id="detailIcon">A</div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-xl font-bold leading-none" id="detailName">Apple</h2>
+                                <i id="detailFavIcon" class="fas fa-star text-gray-300 cursor-pointer hover:text-yellow-400 transition" onclick="toggleDetailFav()"></i>
+                            </div>
+                            <span class="text-xs text-gray-400 font-mono" id="detailSymbol">AAPL</span>
+                        </div>
+                    </div>
+                    <button onclick="closeDetailView()" class="p-2 text-gray-400 hover:text-gray-600 transition hidden md:block"><i class="fas fa-times text-lg"></i></button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto custom-scroll p-6 flex flex-col">
+                    <div class="mb-8">
+                        <div class="flex items-baseline gap-3">
+                            <span class="text-5xl font-bold tracking-tighter" id="detailPrice">₩0</span>
+                            <span class="text-lg font-bold px-3 py-1 rounded-lg bg-gray-100 dark:bg-gray-800" id="detailChange">+0.00%</span>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-2 flex items-center gap-2">
+                            실시간 시세 
+                            <span id="detailLiveTag" class="text-green-500 font-bold hidden text-xs bg-green-100 dark:bg-green-900 px-2 py-0.5 rounded-full animate-pulse">
+                                <i class="fas fa-bolt mr-1"></i>LIVE
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="flex-1 bg-gray-50 dark:bg-black/20 rounded-3xl p-6 shadow-inner relative min-h-[300px] mb-6 border border-gray-100 dark:border-gray-800">
+                        <svg id="bigChartSvg" width="100%" height="100%" preserveAspectRatio="none" class="overflow-visible"></svg>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mt-auto">
+                        <button onclick="triggerTrade('buy')" class="bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-blue-500/30 transition transform active:scale-95 flex items-center justify-center gap-2"><i class="fas fa-arrow-down"></i> 매수하기</button>
+                        <button onclick="triggerTrade('sell')" class="bg-red-500 hover:bg-red-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-red-500/30 transition transform active:scale-95 flex items-center justify-center gap-2"><i class="fas fa-arrow-up"></i> 매도하기</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="tradeModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-cardDark w-[380px] rounded-3xl p-6 shadow-2xl transform transition-all scale-100">
+            <div class="flex justify-between items-center mb-6"><div><h3 class="text-xl font-bold" id="modalTitle">매수 주문</h3><span class="text-xs text-gray-400" id="modalSymbol">AAPL</span></div><button onclick="closeModal()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-200 transition"><i class="fas fa-times"></i></button></div>
+            <div class="flex justify-between items-center mb-6 bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl"><span class="text-sm text-gray-500">현재가</span><span class="text-2xl font-bold" id="modalPrice">₩0</span></div>
+            <div class="space-y-4 mb-6"><div class="flex items-center justify-between"><span class="text-sm font-bold text-gray-500">수량</span><div class="flex items-center gap-3"><button onclick="adjustQty(-1)" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 font-bold text-lg transition">-</button><input type="number" id="tradeQty" value="1" class="bg-transparent text-center text-2xl font-bold w-16 focus:outline-none" readonly><button onclick="adjustQty(1)" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 font-bold text-lg transition">+</button></div></div><div class="flex justify-end gap-2 text-xs"><span id="limitMessage" class="text-gray-400">가능: 0주</span><button onclick="setMaxQty()" class="text-blue-500 font-bold bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded hover:bg-blue-100 transition">최대</button></div></div>
+            <div class="border-t border-gray-100 dark:border-gray-700 pt-4 space-y-2 mb-6"><div class="flex justify-between text-xs text-gray-500"><span>주문 금액</span><span id="modalOrderAmount">0</span></div><div class="flex justify-between text-xs text-red-500 font-bold" id="feeRow"><span>수수료 (0.15%)</span><span id="modalFee">0</span></div><div class="flex justify-between text-lg font-bold items-center mt-2"><span>총 결제금액</span><span id="modalTotal" class="text-blue-600 dark:text-blue-400">0</span></div></div>
+            <button id="confirmTradeBtn" class="w-full py-4 rounded-2xl text-white font-bold text-lg shadow-lg transition transform active:scale-95 bg-blue-600">주문하기</button>
+        </div>
+    </div>
+    <div id="apiModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-cardDark w-[340px] rounded-2xl p-6 shadow-2xl">
+            <h3 class="text-lg font-bold mb-2">설정</h3><p class="text-xs text-gray-400 mb-4">Finnhub API Key 입력 (미입력시 자동 시뮬레이션)</p>
+            <input type="text" id="apiKeyInput" placeholder="API Key 입력" class="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 text-sm mb-4 outline-none focus:border-blue-500 transition">
+            <button onclick="saveApiKey()" class="w-full bg-gray-900 dark:bg-white dark:text-black text-white py-3 rounded-xl font-bold mb-3 hover:opacity-90 transition">저장하기</button>
+            <button onclick="fullReset()" class="w-full border border-red-200 text-red-500 py-3 rounded-xl font-bold text-sm hover:bg-red-50 transition">데이터 초기화</button>
+            <button onclick="closeApiModal()" class="w-full mt-2 text-gray-400 text-xs py-2">닫기</button>
+        </div>
+    </div>
+    <div id="spicyModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-cardDark w-[320px] rounded-2xl p-6 text-center shadow-2xl">
+            <div id="spicyIcon" class="text-5xl mb-4 animate-bounce">🌶️</div><h3 class="text-xl font-bold mb-2" id="spicyTitle">매운맛 모드</h3><div class="text-sm text-gray-600 dark:text-gray-300 mb-6 text-left bg-gray-50 dark:bg-gray-800 p-4 rounded-xl leading-relaxed" id="spicyDesc"></div><button onclick="closeSpicyModal()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition">확인했습니다</button>
+        </div>
+    </div>
+
+    <script>
+        let initialCapital = 10000000, cash = initialCapital, portfolio = {}, historyData = [], apiKey = "", exchangeRate = 1400, isSpicyMode = false, selectedStockId = null, tradeType = 'buy', activeTab = 'market', detailViewId = null, isFavFilterOn = false;
+        
+        // 뉴스 데이터 (평범 8개 : 이벤트 5개)
+        const newsEvents = [
+            { text: "나스닥 기술주 소폭 상승", type: 'NORMAL' },
+            { text: "국제 유가 불안정", type: 'NORMAL' },
+            { text: "투자자 관망세 지속", type: 'NORMAL' },
+            { text: "미국 소비자 물가 지수 발표 임박", type: 'NORMAL' },
+            { text: "기관 투자자, 배당주 매수세", type: 'NORMAL' },
+            { text: "개인 투자자 예탁금 증가", type: 'NORMAL' },
+            { text: "환율 안정세 진입", type: 'NORMAL' },
+            { text: "증권가, 내년 실적 긍정적 전망", type: 'NORMAL' },
+            
+            // 충격 이벤트
+            { text: "연준 '빅스텝' 금리 인상 확정!", type: 'CRASH' },
+            { text: "일론 머스크 '테슬라, 비트코인 결제 재개' 트윗!", type: 'CRYPTO_BOOM' },
+            { text: "엔비디아, 차세대 AI 칩 발표... 주가 급등", type: 'TECH_BOOM' },
+            { text: "주요 가상화폐 거래소 대규모 해킹 발생", type: 'CRYPTO_CRASH' },
+            { text: "글로벌 공급망 위기 심화... 전 종목 약세", type: 'GLOBAL_CRASH' }
+        ];
+
+        let stocks = [
+            {id:'AAPL',name:'애플',symbol:'AAPL',price:0,change:0,type:'US',history:[],fav:false,isLive:false},
+            {id:'NVDA',name:'엔비디아',symbol:'NVDA',price:0,change:0,type:'US',history:[],fav:false,isLive:false},
+            {id:'TSLA',name:'테슬라',symbol:'TSLA',price:0,change:0,type:'US',history:[],fav:false,isLive:false},
+            {id:'MSFT',name:'마이크로소프트',symbol:'MSFT',price:0,change:0,type:'US',history:[],fav:false,isLive:false},
+            {id:'AMZN',name:'아마존',symbol:'AMZN',price:0,change:0,type:'US',history:[],fav:false,isLive:false},
+            {id:'GOOGL',name:'구글',symbol:'GOOGL',price:0,change:0,type:'US',history:[],fav:false,isLive:false},
+            {id:'META',name:'메타',symbol:'META',price:0,change:0,type:'US',history:[],fav:false,isLive:false},
+            {id:'NFLX',name:'넷플릭스',symbol:'NFLX',price:0,change:0,type:'US',history:[],fav:false,isLive:false},
+            {id:'SPY',name:'S&P 500',symbol:'SPY',price:0,change:0,type:'ETF',history:[],fav:false,isLive:false},
+            {id:'QQQ',name:'나스닥 100',symbol:'QQQ',price:0,change:0,type:'ETF',history:[],fav:false,isLive:false},
+            {id:'TQQQ',name:'나스닥 3배',symbol:'TQQQ',price:0,change:0,type:'ETF',history:[],fav:false,isLive:false},
+            {id:'SQQQ',name:'나스닥 인버스',symbol:'SQQQ',price:0,change:0,type:'ETF',history:[],fav:false,isLive:false},
+            {id:'005930.KS',name:'삼성전자',symbol:'005930.KS',price:0,change:0,type:'KR',history:[],fav:false,isLive:false},
+            {id:'000660.KS',name:'SK하이닉스',symbol:'000660.KS',price:0,change:0,type:'KR',history:[],fav:false,isLive:false},
+            {id:'035420.KS',name:'NAVER',symbol:'035420.KS',price:0,change:0,type:'KR',history:[],fav:false,isLive:false},
+            {id:'BTC',name:'비트코인',symbol:'BINANCE:BTCUSDT',price:0,change:0,type:'CRYPTO',history:[],fav:false,isLive:false},
+            {id:'ETH',name:'이더리움',symbol:'BINANCE:ETHUSDT',price:0,change:0,type:'CRYPTO',history:[],fav:false,isLive:false},
+            {id:'XRP',name:'리플',symbol:'BINANCE:XRPUSDT',price:0,change:0,type:'CRYPTO',history:[],fav:false,isLive:false},
+            {id:'DOGE',name:'도지코인',symbol:'BINANCE:DOGEUSDT',price:0,change:0,type:'CRYPTO',history:[],fav:false,isLive:false}
+        ];
+
+        function initDummyData() {
+            stocks.forEach(s => {
+                if (s.price === 0) {
+                    if (s.type === 'KR') s.price = 50000 + Math.floor(Math.random() * 50000);
+                    else if (s.type === 'CRYPTO') s.price = 1000000 + Math.floor(Math.random() * 50000000);
+                    else s.price = (100 + Math.floor(Math.random() * 300)) * exchangeRate;
+                }
+                s.history = []; let p = s.price;
+                for (let i = 0; i < 30; i++) { s.history.unshift(p); p = p * (1 + (Math.random() * 0.04 - 0.02)); }
+            });
+        }
+        initDummyData();
+
+        function loadGameData() {
+            if(localStorage.getItem('myStock_initial')) initialCapital = parseInt(localStorage.getItem('myStock_initial'));
+            if(localStorage.getItem('myStock_cash')) cash = parseInt(localStorage.getItem('myStock_cash'));
+            if(localStorage.getItem('myStock_portfolio')) portfolio = JSON.parse(localStorage.getItem('myStock_portfolio'));
+            if(localStorage.getItem('myStock_history')) historyData = JSON.parse(localStorage.getItem('myStock_history'));
+            if(localStorage.getItem('myStock_apiKey')) { apiKey = localStorage.getItem('myStock_apiKey'); document.getElementById('apiKeyInput').value = apiKey; updateApiStatus(true); }
+            if(localStorage.getItem('myStock_spicy')) isSpicyMode = localStorage.getItem('myStock_spicy') === 'true';
+            if(localStorage.getItem('myStock_favs')) {
+                const favIds = JSON.parse(localStorage.getItem('myStock_favs'));
+                stocks.forEach(s => { if (favIds.includes(s.id)) s.isFavorite = true; });
+            }
+            updateSpicyButtonUI();
+        }
+        function saveGameData() {
+            localStorage.setItem('myStock_initial', initialCapital); localStorage.setItem('myStock_cash', cash); localStorage.setItem('myStock_portfolio', JSON.stringify(portfolio)); localStorage.setItem('myStock_history', JSON.stringify(historyData)); localStorage.setItem('myStock_apiKey', apiKey); localStorage.setItem('myStock_spicy', isSpicyMode);
+            localStorage.setItem('myStock_favs', JSON.stringify(stocks.filter(s => s.isFavorite).map(s => s.id)));
+        }
+
+        function toggleFavorite(id, event) {
+            if (event) event.stopPropagation();
+            const s = stocks.find(x => x.id === id);
+            if (s) { s.isFavorite = !s.isFavorite; saveGameData(); renderMarket(); if (detailViewId === id) updateDetailViewData(s); }
+        }
+        function toggleFavFilter() {
+            isFavFilterOn = !isFavFilterOn;
+            const btn = document.getElementById('favFilterBtn');
+            btn.className = isFavFilterOn ? "w-10 h-10 flex items-center justify-center rounded-xl bg-yellow-100 text-yellow-500 border border-yellow-200 shadow-inner" : "w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-cardDark border border-gray-200 dark:border-gray-700 text-gray-400 hover:text-yellow-400 shadow-sm";
+            renderMarket();
+        }
+        function toggleDetailFav() {
+            if (detailViewId) {
+                toggleFavorite(detailViewId, null);
+                const s = stocks.find(x => x.id === detailViewId);
+                const icon = document.getElementById('detailFavIcon');
+                if (s.isFavorite) icon.classList.add('text-yellow-400'); else icon.classList.remove('text-yellow-400');
+            }
+        }
+
+        function openDetailView(id) {
+            if (detailViewId === id) return;
+            detailViewId = id;
+            document.getElementById('main-content').classList.add('split-active');
+            const s = stocks.find(x => x.id === id);
+            document.getElementById('detailName').innerText = s.name;
+            document.getElementById('detailSymbol').innerText = s.symbol;
+            document.getElementById('detailIcon').innerText = s.name.charAt(0);
+            const favIcon = document.getElementById('detailFavIcon');
+            if (s.isFavorite) favIcon.classList.add('text-yellow-400'); else favIcon.classList.remove('text-yellow-400');
+            updateDetailViewData(s);
+            setTimeout(() => drawBigChart(s), 300);
+        }
+        function closeDetailView() { detailViewId = null; document.getElementById('main-content').classList.remove('split-active'); }
+        function updateDetailViewData(s) {
+            const isUp = s.change >= 0;
+            const color = isUp ? 'text-red-500' : 'text-blue-500';
+            const bg = isUp ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-300' : 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300';
+            document.getElementById('detailPrice').innerText = formatKRW(s.price);
+            document.getElementById('detailPrice').className = `text-5xl font-bold tracking-tighter ${color}`;
+            const changeEl = document.getElementById('detailChange');
+            changeEl.innerText = `${isUp ? '▲' : '▼'} ${Math.abs(s.change).toFixed(2)}%`;
+            changeEl.className = `text-lg font-bold px-3 py-1 rounded-lg ${bg}`;
+            if(s.isLive) document.getElementById('detailLiveTag').classList.remove('hidden'); else document.getElementById('detailLiveTag').classList.add('hidden');
+        }
+        function triggerTrade(type) { if(detailViewId) openTradeModal(detailViewId, type); }
+
+        function drawSparkline(h, isUp) {
+            if(!h || h.length < 2) return '';
+            const w=60, ht=20, min=Math.min(...h), max=Math.max(...h), r=max-min||1;
+            const pts=h.map((p,i)=>`${(i/(h.length-1))*w},${ht-((p-min)/r)*ht}`).join(' ');
+            return `<svg width="${w}" height="${ht}"><polyline fill="none" stroke="${isUp?'#ef4444':'#3b82f6'}" stroke-width="1.5" points="${pts}"/></svg>`;
+        }
+        function drawBigChart(s) {
+            const svg = document.getElementById('bigChartSvg');
+            const h = s.history; if(h.length<2) return;
+            const w=svg.clientWidth, ht=svg.clientHeight, min=Math.min(...h), max=Math.max(...h), r=max-min||1;
+            const isUp = h[h.length-1]>=h[0]; const color = isUp?'#ef4444':'#3b82f6';
+            const pts = h.map((p,i)=>`${(i/(h.length-1))*w},${ht-((p-min)/r)*ht*0.8-(ht*0.1)}`).join(' ');
+            svg.innerHTML = `<polyline fill="none" stroke="${color}" stroke-width="3" points="${pts}" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${w}" cy="${ht-((h[h.length-1]-min)/r)*ht*0.8-(ht*0.1)}" r="6" fill="${color}" stroke="white" stroke-width="2"/>`;
+        }
+
+        async function fetchRealStockData() {
+            if (!apiKey) { simulateMarket(); return; }
+            for (let i = 0; i < stocks.length; i++) {
+                const s = stocks[i];
+                if (s.type === 'CRYPTO') { simulateSingleStock(s); continue; }
+                try {
+                    const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${s.symbol}&token=${apiKey}`);
+                    if (res.status === 429) { simulateSingleStock(s); continue; }
+                    const d = await res.json();
+                    if (d.c) {
+                        let p = s.type !== 'KR' ? d.c * exchangeRate : d.c;
+                        if (s.price !== Math.floor(p) || !s.isLive) {
+                            s.price = Math.floor(p); s.change = d.dp; s.isLive = true;
+                            s.history.push(s.price); if (s.history.length > 50) s.history.shift();
+                            highlightUpdate(s.id); 
+                        }
+                    } else simulateSingleStock(s);
+                } catch { simulateSingleStock(s); }
+                await new Promise(r => setTimeout(r, 100));
+            }
+            updateUI();
+        }
+
+        function simulateSingleStock(s) {
+            const rate = (Math.random() * 4 - 2);
+            s.change = rate; s.price = Math.floor(s.price * (1 + rate / 100)); s.isLive = false;
+            s.history.push(s.price); if (s.history.length > 50) s.history.shift();
+        }
+        function simulateMarket() { stocks.forEach(s => simulateSingleStock(s)); updateUI(); }
+
+        function highlightUpdate(id) {
+            setTimeout(() => {
+                const el = document.getElementById(`stock-card-${id}`);
+                if (el) { el.classList.remove('updated-light', 'updated-dark'); void el.offsetWidth; el.classList.add('updated-light', 'updated-dark'); }
+            }, 50);
+        }
+
+        function updateUI() {
+            updateDashboard();
+            if (activeTab === 'market') renderMarket();
+            if (activeTab === 'portfolio') renderPortfolio();
+            if (activeTab === 'history') renderHistory();
+            if (detailViewId) { const s = stocks.find(x => x.id === detailViewId); if(s) { updateDetailViewData(s); drawBigChart(s); } }
+        }
+        function formatKRW(n) { return '₩' + Math.floor(n).toLocaleString(); }
+        function updateDashboard() {
+            let pv = 0; for (let id in portfolio) { const s = stocks.find(x => x.id === id); if (s) pv += portfolio[id].qty * s.price; }
+            const total = cash + pv; const profit = total - initialCapital; const rate = initialCapital === 0 ? 0 : (profit / initialCapital) * 100;
+            document.getElementById('totalAsset').innerText = formatKRW(total); document.getElementById('cashDisplay').innerText = formatKRW(cash);
+            const re = document.getElementById('returnRateDisplay'); re.innerText = (rate >= 0 ? '+' : '') + rate.toFixed(2) + '%'; re.className = `text-lg font-bold ${rate >= 0 ? 'text-red-500' : 'text-blue-500'}`;
+            let rank = "주린이"; if (rate > 100) rank = "👑 월스트리트 제왕"; else if (rate > 50) rank = "🤴 워렌 버핏"; else if (rate > 20) rank = "🦊 여의도 고수"; else if (rate < -50) rank = "🚀 화성 갈끄니까!"; else if (rate < -30) rank = "🌊 한강뷰";
+            const b = document.getElementById('userRankBadge'); b.innerText = rank; b.className = rank.includes("화성") ? "font-bold text-purple-600 animate-pulse" : (rate >= 0 ? "font-bold text-red-500" : "font-bold text-blue-500");
+        }
+
+        function renderMarket() {
+            const container = document.getElementById('market-view');
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            let html = ''; let hasResults = false;
+            stocks.forEach(s => {
+                if (isFavFilterOn && !s.isFavorite) return;
+                if (q && !s.name.toLowerCase().includes(q) && !s.symbol.toLowerCase().includes(q)) return;
+                hasResults = true;
+                const isUp = s.change >= 0; const color = isUp ? 'text-red-500' : 'text-blue-500';
+                const spark = drawSparkline(s.history, isUp);
+                const activeClass = detailViewId === s.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600';
+                const starClass = s.isFavorite ? "fas fa-star text-yellow-400" : "far fa-star text-gray-300 hover:text-yellow-400";
+                const liveIcon = s.isLive ? `<i class="fas fa-bolt text-[10px] text-green-500 animate-pulse ml-1" title="실시간"></i>` : '';
+
+                html += `
+                <div id="stock-card-${s.id}" onclick="openDetailView('${s.id}')" class="bg-white dark:bg-cardDark p-3 rounded-xl shadow-sm border ${activeClass} flex justify-between items-center cursor-pointer transition active:scale-[0.98]">
+                    <div class="mr-3 cursor-pointer p-1" onclick="toggleFavorite('${s.id}', event)"><i class="${starClass}"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[9px] bg-gray-100 dark:bg-gray-700 text-gray-500 px-1.5 rounded font-bold">${s.type}</span>
+                            <h3 class="font-bold text-sm truncate dark:text-gray-100">${s.name} ${liveIcon}</h3>
+                        </div>
+                        <span class="text-xs text-gray-400 font-mono">${s.symbol.split(':')[0]}</span>
+                    </div>
+                    <div class="w-16 h-8 mx-2">${spark}</div>
+                    <div class="text-right">
+                        <div class="font-bold text-sm dark:text-white">${formatKRW(s.price)}</div>
+                        <div class="text-[10px] font-bold ${color}">${isUp ? '▲' : '▼'} ${Math.abs(s.change).toFixed(2)}%</div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = hasResults ? html : `<div class="text-center py-10 text-gray-400 text-xs">검색 결과 없음</div>`;
+        }
+
+        function filterStocks() { renderMarket(); }
+        function renderPortfolio() {
+            const c=document.getElementById('portfolio-view'); const k=Object.keys(portfolio);
+            if(k.length===0){c.innerHTML=`<div class="text-center py-10 text-gray-400"><i class="fas fa-box-open text-3xl mb-2"></i><p>보유 주식 없음</p></div>`;return;}
+            let html=''; k.forEach(id=>{ const d=portfolio[id],s=stocks.find(x=>x.id===id); if(!s)return; const cv=s.price*d.qty, p=cv-(d.avgPrice*d.qty), r=d.avgPrice===0?0:((cv-(d.avgPrice*d.qty))/(d.avgPrice*d.qty))*100, up=r>=0; html+=`<div class="bg-white dark:bg-cardDark p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 cursor-pointer hover:shadow-md transition" onclick="openDetailView('${s.id}')"><div class="flex justify-between mb-2"><div><h3 class="font-bold text-sm dark:text-white">${s.name}</h3><span class="text-xs text-gray-400">${d.qty}주 보유</span></div><div class="text-right"><div class="font-bold text-sm ${up?'text-red-500':'text-blue-500'}">${up?'+':''}${r.toFixed(2)}%</div><div class="text-xs text-gray-400">${formatKRW(p)}</div></div></div></div>`;}); c.innerHTML=html;
+        }
+        function renderHistory() {
+            const c=document.getElementById('history-view'); if(historyData.length===0){c.innerHTML=`<div class="text-center py-10 text-gray-400"><i class="fas fa-history text-3xl mb-2"></i><p>기록 없음</p></div>`;return;}
+            let html=''; [...historyData].reverse().forEach(r=>{ const buy=r.type==='buy'; html+=`<div class="bg-white dark:bg-cardDark p-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 flex justify-between items-center"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full flex items-center justify-center ${buy?'bg-blue-100 text-blue-600':'bg-red-100 text-red-600'} text-xs"><i class="fas ${buy?'fa-shopping-cart':'fa-money-bill-wave'}"></i></div><div><h4 class="font-bold text-xs dark:text-gray-200">${r.name}</h4><p class="text-[10px] text-gray-400">${r.time}</p></div></div><div class="text-right"><span class="font-bold text-xs block dark:text-gray-100">${buy?'-':'+'} ${formatKRW(r.total)}</span><span class="text-[10px] text-gray-400">${r.qty}주 ${r.fee>0?'(Fee)':''}</span></div></div>`;}); c.innerHTML=html;
+        }
+
+        // --- 거래 로직 ---
+        function openTradeModal(id, type) {
+            selectedStockId=id; tradeType=type; const s=stocks.find(x=>x.id===id);
+            document.getElementById('modalTitle').innerText=type==='buy'?'매수 주문':'매도 주문';
+            document.getElementById('modalSymbol').innerText=s.symbol;
+            document.getElementById('modalPrice').innerText=formatKRW(s.price);
+            document.getElementById('tradeQty').value=1;
+            document.getElementById('confirmTradeBtn').className=`w-full py-4 rounded-2xl text-white font-bold text-lg shadow-lg transition transform active:scale-95 ${type==='buy'?'bg-blue-600 hover:bg-blue-700':'bg-red-500 hover:bg-red-600'}`;
+            document.getElementById('confirmTradeBtn').innerText=type==='buy'?'매수하기':'매도하기';
+            updateTradeCalc(s); document.getElementById('tradeModal').classList.remove('hidden');
+        }
+        function updateTradeCalc(s) {
+            const q=parseInt(document.getElementById('tradeQty').value), raw=s.price*q, fee=isSpicyMode?Math.floor(raw*0.0015):0, total=tradeType==='buy'?raw+fee:raw-fee;
+            const margin=isSpicyMode?1.0015:1, max=tradeType==='buy'?Math.floor(cash/(s.price*margin)):(portfolio[s.id]?.qty||0);
+            document.getElementById('limitMessage').innerText=`가능: ${max}주`;
+            document.getElementById('modalOrderAmount').innerText=formatKRW(raw);
+            document.getElementById('modalFee').innerText=formatKRW(fee);
+            document.getElementById('modalTotal').innerText=formatKRW(total);
+            document.getElementById('confirmTradeBtn').onclick=()=>{
+                if(tradeType==='buy'){
+                    if(cash<total){alert('잔액 부족');return;}
+                    if(!portfolio[s.id])portfolio[s.id]={qty:0,avgPrice:0};
+                    let p=portfolio[s.id]; p.avgPrice=((p.qty*p.avgPrice)+raw)/(p.qty+q); p.qty+=q; cash-=total;
+                }else{
+                    if((portfolio[s.id]?.qty||0)<q){alert('수량 부족');return;}
+                    const p = portfolio[s.id];
+                    if(s.price > p.avgPrice) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                    portfolio[s.id].qty-=q; if(portfolio[s.id].qty===0)delete portfolio[s.id]; cash+=total;
+                }
+                addToHistory(tradeType,s.name,s.price,q,fee); closeModal(); updateUI(); saveGameData();
+            };
+        }
+        function adjustQty(d){const e=document.getElementById('tradeQty');let v=parseInt(e.value)+d;if(v<1)v=1;e.value=v;updateTradeCalc(stocks.find(x=>x.id===selectedStockId));}
+        function setMaxQty(){const s=stocks.find(x=>x.id===selectedStockId);const m=isSpicyMode?1.0015:1;const max=tradeType==='buy'?Math.floor(cash/(s.price*m)):(portfolio[s.id]?.qty||0);document.getElementById('tradeQty').value=max>0?max:1;updateTradeCalc(s);}
+        function addToHistory(t,n,p,q,f){const time=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});historyData.push({type:t,name:n,price:p,qty:q,total:(t==='buy'?p*q+f:p*q-f),fee:f,time:time});if(historyData.length>50)historyData.shift();}
+        function closeModal(){document.getElementById('tradeModal').classList.add('hidden');}
+        function switchTab(t){activeTab=t;['market','portfolio','history'].forEach(x=>{document.getElementById(`${x}-view`).className=x===t?(x==='market'?'space-y-2':'hidden'):'hidden';const btn=document.getElementById(`tab-${x}`);if(x===t)btn.className="flex-1 py-2 rounded-lg bg-white dark:bg-cardDark shadow text-gray-800 dark:text-white font-bold transition-all";else btn.className="flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-700 transition-all";});updateUI();}
+        
+        function editInitialCapital(){const v=prompt("초기 자산 설정",initialCapital);if(v){const val=parseInt(v.replace(/[^0-9]/g,''));if(val>0){if(confirm(`${formatKRW(val)}원으로 초기화?`)){initialCapital=val;fullReset();}}}}
+        function fullReset(){cash=initialCapital;portfolio={};historyData=[];stocks.forEach(s=>s.fav=false);saveGameData();location.reload();}
+        function openApiSettings(){document.getElementById('apiModal').classList.remove('hidden');}
+        function closeApiModal(){document.getElementById('apiModal').classList.add('hidden');}
+        function saveApiKey(){apiKey=document.getElementById('apiKeyInput').value;saveGameData();closeApiModal();fetchRealStockData();}
+        function updateApiStatus(a){const e=document.getElementById('liveIndicator');e.innerText=a?"LIVE":"SIMUL";e.className=a?"text-[9px] bg-green-100 text-green-600 px-1.5 py-0.5 rounded font-bold animate-pulse":"text-[9px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded font-bold";}
+        function toggleSpicyMode(){isSpicyMode=!isSpicyMode;updateSpicyButtonUI();saveGameData();const t=isSpicyMode?"매운맛 ON!":"순한맛 ON";const d=isSpicyMode?"🔥 수수료 0.15% / 돌발 이벤트 발생":"🌱 수수료 무료 / 평화 모드";document.getElementById('spicyTitle').innerText=t;document.getElementById('spicyDesc').innerText=d;document.getElementById('spicyModal').classList.remove('hidden');}
+        function updateSpicyButtonUI(){const b=document.getElementById('spicyBtn');b.innerText=isSpicyMode?"🔥 매운맛":"🌱 순한맛";b.className=isSpicyMode?"px-2 py-1 text-xs bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300 rounded-lg font-bold transition":"px-2 py-1 text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 rounded-lg font-bold transition";}
+        function closeSpicyModal(){document.getElementById('spicyModal').classList.add('hidden');}
+        
+        function startNewsTicker(){updateNews();setInterval(updateNews,12000);}
+        function updateNews(){
+            let selectedNews;
+            if(!isSpicyMode) {
+                // 순한맛: 일반 뉴스만
+                const normal = newsEvents.filter(n => n.type === 'NORMAL');
+                selectedNews = normal[Math.floor(Math.random() * normal.length)];
+            } else {
+                // 매운맛: 1% 확률로 이벤트 발생 (20분=1200초, 12초마다 갱신 -> 100번 중 1번)
+                const isEvent = Math.random() < 0.01; 
+                if (isEvent) {
+                    const impact = newsEvents.filter(n => n.type !== 'NORMAL');
+                    selectedNews = impact[Math.floor(Math.random() * impact.length)];
+                } else {
+                    const normal = newsEvents.filter(n => n.type === 'NORMAL');
+                    selectedNews = normal[Math.floor(Math.random() * normal.length)];
+                }
+            }
+
+            const e = document.getElementById('newsContent');
+            const b = document.getElementById('newsBar');
+            e.style.opacity=0;
+            setTimeout(()=>{
+                e.innerText = selectedNews.text;
+                e.style.opacity=1;
+                
+                if(isSpicyMode && selectedNews.type !== 'NORMAL'){
+                    applyShock(selectedNews.type);
+                    // 뉴스바 색상 변경
+                    b.className = selectedNews.type.includes('CRASH') ? "h-8 bg-red-900 text-white text-[10px] py-1.5 px-3 flex items-center gap-2 overflow-hidden shrink-0 z-10 shadow-sm transition-colors duration-500" : "h-8 bg-green-800 text-white text-[10px] py-1.5 px-3 flex items-center gap-2 overflow-hidden shrink-0 z-10 shadow-sm transition-colors duration-500";
+                    // 🚨 팝업 호출
+                    showEventPopup(selectedNews);
+                } else {
+                    b.className = "h-8 bg-gray-800 dark:bg-gray-950 text-white text-[10px] py-1.5 px-3 flex items-center gap-2 overflow-hidden shrink-0 z-10 shadow-sm transition-colors duration-500";
+                }
+            },500);
+        }
+
+        // 🚨 이벤트 팝업 표시 함수
+        function showEventPopup(news) {
+            const popup = document.getElementById('eventPopup');
+            const content = document.getElementById('eventPopupContent');
+            const title = document.getElementById('eventPopupTitle');
+            const text = document.getElementById('eventPopupText');
+            const icon = document.getElementById('eventPopupIcon');
+
+            // 스타일 설정
+            if(news.type.includes('CRASH')) {
+                content.className = "bg-red-500 text-white border-4 border-red-700 shadow-2xl rounded-2xl p-4 flex items-center gap-4 w-full animate-bounce";
+                icon.innerText = "📉";
+                title.innerText = "MARKET CRASH!";
+            } else {
+                content.className = "bg-green-500 text-white border-4 border-green-700 shadow-2xl rounded-2xl p-4 flex items-center gap-4 w-full animate-bounce";
+                icon.innerText = "🚀";
+                title.innerText = "MARKET BOOM!";
+            }
+            
+            text.innerText = news.text;
+            popup.classList.add('popup-active');
+            popup.classList.remove('hidden');
+
+            // 3.5초 후 사라짐
+            setTimeout(() => {
+                popup.classList.remove('popup-active');
+                popup.classList.add('hidden');
+            }, 3500);
+        }
+
+        function applyShock(t){let m=1,tt='ALL';if(t.includes('CRASH'))m=0.97;else if(t.includes('BOOM'))m=1.05;if(t.includes('CRYPTO'))tt='CRYPTO';else if(t.includes('TECH'))tt='US';stocks.forEach(s=>{if(tt==='ALL'||s.type===tt||(tt==='US'&&s.type==='ETF')){s.price=Math.floor(s.price*m);s.change+=(m-1)*100;s.history.push(s.price);if(s.history.length>50)s.history.shift();}});updateUI();}
+        function exportData(){const d={initialCapital,cash,portfolio,historyData,apiKey,isSpicyMode,timestamp:new Date().toISOString()};const s="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(d));const a=document.createElement('a');a.setAttribute("href",s);a.setAttribute("download","stock-king-backup.json");document.body.appendChild(a);a.click();a.remove();}
+        function triggerImport(){document.getElementById('fileInput').click();}
+        function importData(i){const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=(e)=>{try{const d=JSON.parse(e.target.result);if(d.initialCapital)initialCapital=d.initialCapital;if(d.cash)cash=d.cash;if(d.portfolio)portfolio=d.portfolio;if(d.historyData)historyData=d.historyData;if(d.apiKey)apiKey=d.apiKey;isSpicyMode=d.isSpicyMode||false;saveGameData();location.reload();}catch{alert('파일 오류');}};r.readAsText(f);i.value='';}
+        document.getElementById('themeToggle').addEventListener('click',()=>document.documentElement.classList.toggle('dark'));
+        
+        loadGameData(); updateUI(); startNewsTicker(); setInterval(()=>fetchRealStockData(),3000);
+    </script>
+</body>
+</html>
